@@ -1,48 +1,44 @@
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
-const cors = require('cors');
-
 const app = express();
-const PORT = process.env.PORT || 3000;
-
-// Enable CORS for all origins
-app.use(cors({
-    origin: true,
-    credentials: true
-}));
 
 app.use(express.json());
-app.use(express.static('.'));
+app.use(express.static('public'));
 
-// Create data.json if it doesn't exist
-if (!fs.existsSync('data.json')) {
-    fs.writeFileSync('data.json', '[]');
+const DATA_FILE = path.join(__dirname, 'data.json');
+
+// Initialize data file if it doesn't exist
+if (!fs.existsSync(DATA_FILE)) {
+    fs.writeFileSync(DATA_FILE, JSON.stringify([], null, 2));
 }
 
-// Routes
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'dashboard.html'));
-});
-
+// API Endpoints
 app.get('/api/data', (req, res) => {
     try {
-        const data = fs.readFileSync('data.json', 'utf8');
-        res.json(JSON.parse(data));
-    } catch (error) {
-        res.json([]);
+        const data = JSON.parse(fs.readFileSync(DATA_FILE, 'utf8'));
+        res.json(data);
+    } catch (err) {
+        res.status(500).json({ error: 'Error reading data' });
     }
 });
 
-app.post('/save', (req, res) => {
+app.post('/api/save', (req, res) => {
     try {
-        fs.writeFileSync('data.json', JSON.stringify(req.body, null, 2));
+        fs.writeFileSync(DATA_FILE, JSON.stringify(req.body.data, null, 2));
+        console.log(`Data saved by ${req.body.user}`);
         res.json({ success: true });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
+    } catch (err) {
+        res.status(500).json({ error: 'Error saving data' });
     }
 });
 
+// Serve frontend
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
+});
+
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
