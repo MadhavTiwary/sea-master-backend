@@ -1,17 +1,18 @@
-const path = require('path');
-const express = require('express');
-const app = express();
-
-// Serve static files from the correct directory
-app.use(express.static(path.join(__dirname, 'public')));
-
-// Handle all other routes by serving the HTML file
-app.get('*', (req, res) => {
-  // Change line 10 to:
-res.sendFile(path.join(__dirname, 'dashboard.html'));
+// Add this before the wildcard route
+app.get('/api/data', (req, res) => {
+  try {
+    const data = JSON.parse(fs.readFileSync('data.json', 'utf8'));
+    res.json(data);
+  } catch (err) {
+    res.status(500).json({ error: 'Error reading data' });
+  }
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+app.post('/api/save', (req, res) => {
+  try {
+    fs.writeFileSync('data.json', JSON.stringify(req.body));
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: 'Error saving data' });
+  }
 });
