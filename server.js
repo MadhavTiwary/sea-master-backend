@@ -7,7 +7,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Handle all other routes by serving the HTML file
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
+  // Change line 10 to:
+res.sendFile(path.join(__dirname, 'dashboard.html'));
 });
 
 const PORT = process.env.PORT || 3000;
