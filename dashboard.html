@@ -687,7 +687,7 @@
                 <button onclick="toggleFilterPanel()" class="btn-primary">🔍 Show Filters</button>
             </div>
             <div style="margin-top: 15px; font-size: 14px; color: #666;">
-                <span id="autoLoadStatus">Auto-loading from: <code style="background: #f0f0f0; padding: 2px 6px; border-radius: 4px;">./data.json</code></span>
+                <span id="autoLoadStatus">Auto-loading from: <code style="background: #f0f0f0; padding: 2px 6px; border-radius: 4px;" id="dataSourceDisplay">./data.json</code></span>
                 <span id="lastUpdate" style="margin-left: 20px;"></span>
                 <div style="margin-top: 10px; padding: 10px; background: #d4edda; border: 1px solid #c3e6cb; border-radius: 5px; color: #155724;">
                     <strong>✅ Auto-Save Enabled:</strong> All changes are automatically saved.
@@ -740,13 +740,17 @@
     <div id="notification"></div>
 
     <script>
+        // Auto-detect environment
+        const IS_LOCAL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        const API_BASE = IS_LOCAL ? '' : '/api'; // Railway uses /api prefix
+
         // Configuration
         const CONFIG = {
-            dataPath: './data.json',
+            dataPath: IS_LOCAL ? './data.json' : `${API_BASE}/data`,
             autoReload: true,
             reloadInterval: 5000,
             autoSave: true,
-            saveEndpoint: '/save',
+            saveEndpoint: IS_LOCAL ? '/save' : `${API_BASE}/save`,
             adminPassword: 'pakistanmc', // Change this in production!
             editableByAll: ['Production_Team_Remark', 'Status'], // Fields editable by all users
             statusColors: {
@@ -767,11 +771,40 @@
         let isUserInteracting = false;
         let lastDataUpdate = null;
         let isAdmin = false;
-        let currentUser = ''; // ADDED: Track current user
+        let currentUser = '';
 
-        // Get user identifier function - ADDED
+        // Initialize the application
+        function init() {
+            // Update data source display
+            document.getElementById('dataSourceDisplay').textContent = CONFIG.dataPath;
+            
+            // Check admin status
+            checkAdminStatus();
+            
+            // Get user identifier
+            getUserIdentifier();
+            
+            // Load saved filters and search
+            loadFiltersFromStorage();
+            
+            // Load initial data
+            loadDataFromPath();
+            
+            // Start auto-reload
+            startAutoReload();
+        }
+
+        // Get user identifier function
         function getUserIdentifier() {
-            // Always ask for user name
+            // Check if we already have a user ID
+            const savedUserId = localStorage.getItem('seaMasterUserId');
+            if (savedUserId) {
+                currentUser = savedUserId;
+                updateUserDisplay();
+                return currentUser;
+            }
+            
+            // Prompt for user name
             let userId = prompt('Please enter your name:');
             if (!userId || userId.trim() === '') {
                 userId = 'Anonymous';
@@ -780,14 +813,19 @@
             
             localStorage.setItem('seaMasterUserId', userId);
             currentUser = userId;
+            updateUserDisplay();
             
-            // Update the display
+            // Show welcome message
+            showNotification(`Welcome ${currentUser}! Your edits will be tracked.`);
+            
+            return userId;
+        }
+
+        function updateUserDisplay() {
             const userDisplay = document.getElementById('currentUserDisplay');
             if (userDisplay) {
                 userDisplay.textContent = `Current User: ${currentUser}`;
             }
-            
-            return userId;
         }
 
         // Admin functions
@@ -1446,7 +1484,6 @@
             isUserInteracting = false; // Allow refresh again
         }
 
-        // UPDATED saveModalData function with user tracking
         function saveModalData() {
             const modal = document.getElementById('modal');
             const inputs = modal.querySelectorAll('input, textarea');
@@ -1561,40 +1598,31 @@
                         headers: {
                             'Content-Type': 'application/json',
                         },
-                        body: JSON.stringify(jsonData, null, 2)
+                        body: JSON.stringify({
+                            data: jsonData,
+                            user: currentUser,
+                            timestamp: new Date().toISOString()
+                        })
                     });
                     
                     if (response.ok) {
-                        console.log('Changes saved to file');
+                        console.log('Changes saved successfully');
+                        return true;
                     } else {
-                        throw new Error('Save failed');
+                        const error = await response.text();
+                        throw new Error(error || 'Save failed');
                     }
                 }
+                return false;
             } catch (error) {
                 console.error('Auto-save error:', error);
+                showNotification('Failed to save changes: ' + error.message, 'error');
+                return false;
             }
         }
 
-        // UPDATED window.onload to ask for user name
-        window.onload = async function() {
-            // Check admin status first
-            checkAdminStatus();
-            
-            // GET USER NAME - This will prompt for name
-            getUserIdentifier();
-            
-            // Show welcome message
-            showNotification(`Welcome ${currentUser}! Your edits will be tracked.`);
-            
-            // Load saved filters and search
-            loadFiltersFromStorage();
-            
-            // Load data
-            await loadDataFromPath();
-            
-            // Start auto-reload
-            startAutoReload();
-        };
+        // Initialize the application when DOM is loaded
+        document.addEventListener('DOMContentLoaded', init);
 
         // Close modal when clicking outside
         window.onclick = function(event) {
@@ -1632,4 +1660,3 @@
     </script>
 </body>
 </html>
-            
