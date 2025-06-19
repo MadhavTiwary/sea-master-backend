@@ -2,11 +2,10 @@ const express = require('express');
 const fs = require('fs');
 const path = require('path');
 const cors = require('cors');
-const basicAuth = require('express-basic-auth');
 
 const app = express();
 
-// Use Railway's provided PORT or fallback
+// Configuration
 const PORT = process.env.PORT || 8000;
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'pakistanmc';
 const NODE_ENV = process.env.NODE_ENV || 'development';
@@ -16,18 +15,34 @@ console.log(`📊 Environment: ${NODE_ENV}`);
 console.log(`🔐 Admin Password: ${ADMIN_PASSWORD}`);
 console.log(`📁 Working Directory: ${__dirname}`);
 
-// Basic Authentication
-app.use(basicAuth({
-    users: { 'admin': ADMIN_PASSWORD },
-    challenge: true,
-    unauthorizedResponse: (req) => {
-        return {
-            error: 'Unauthorized',
-            message: 'Invalid credentials for SEA MASTER Dashboard',
-            timestamp: new Date().toISOString()
-        };
+// Simple Basic Auth Middleware (custom implementation)
+function basicAuth(req, res, next) {
+    const auth = req.headers.authorization;
+    
+    if (!auth || !auth.startsWith('Basic ')) {
+        res.setHeader('WWW-Authenticate', 'Basic realm="SEA MASTER Dashboard"');
+        return res.status(401).json({
+            error: 'Authentication required',
+            message: 'Please provide admin credentials'
+        });
     }
-}));
+    
+    const credentials = Buffer.from(auth.split(' ')[1], 'base64').toString().split(':');
+    const username = credentials[0];
+    const password = credentials[1];
+    
+    if (username !== 'admin' || password !== ADMIN_PASSWORD) {
+        return res.status(401).json({
+            error: 'Invalid credentials',
+            message: 'Wrong username or password'
+        });
+    }
+    
+    next();
+}
+
+// Apply basic auth to all routes
+app.use(basicAuth);
 
 // CORS configuration
 app.use(cors({
@@ -41,7 +56,7 @@ app.use(cors({
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Serve static files from current directory
+// Serve static files
 app.use(express.static(__dirname, {
     maxAge: NODE_ENV === 'production' ? '1h' : '0',
     etag: true
@@ -65,24 +80,37 @@ function initializeDataFile() {
             
             console.log(`✅ Loaded ${jsonData.length} records from data.json`);
         } else {
-            console.log('📝 Creating new data.json file...');
-            jsonData = [];
+            console.log('📝 Creating new data.json file with sample data...');
+            jsonData = [
+                {
+                    "id": "001",
+                    "Project_Name": "Layer Enhancement Project",
+                    "Status": "In Progress",
+                    "Production_Team_Remark": "Working on optimization",
+                    "Priority": "High",
+                    "Assigned_To": "Development Team",
+                    "Created_Date": new Date().toLocaleString(),
+                    "Created_By": "System",
+                    "Last_Edit_Date": new Date().toLocaleString(),
+                    "Edited_By": "System"
+                },
+                {
+                    "id": "002",
+                    "Project_Name": "Feedback Integration",
+                    "Status": "Completed",
+                    "Production_Team_Remark": "Successfully integrated feedback system",
+                    "Priority": "Medium",
+                    "Assigned_To": "QA Team",
+                    "Created_Date": new Date().toLocaleString(),
+                    "Created_By": "System",
+                    "Last_Edit_Date": new Date().toLocaleString(),
+                    "Edited_By": "System"
+                }
+            ];
             saveDataFile();
         }
     } catch (err) {
         console.error('❌ Error reading data.json:', err.message);
-        
-        // Create backup if file is corrupted
-        if (fs.existsSync(DATA_FILE)) {
-            const backupFile = `${DATA_FILE}.backup.${Date.now()}`;
-            try {
-                fs.copyFileSync(DATA_FILE, backupFile);
-                console.log(`💾 Corrupted file backed up to: ${backupFile}`);
-            } catch (backupError) {
-                console.error('❌ Failed to create backup:', backupError.message);
-            }
-        }
-        
         jsonData = [];
         saveDataFile();
     }
@@ -91,32 +119,11 @@ function initializeDataFile() {
 function saveDataFile() {
     try {
         const dataToSave = JSON.stringify(jsonData, null, 2);
-        const tempFile = `${DATA_FILE}.tmp`;
-        
-        // Write to temp file first (atomic operation)
-        fs.writeFileSync(tempFile, dataToSave, 'utf8');
-        
-        // Move temp file to actual file
-        if (fs.existsSync(DATA_FILE)) {
-            fs.unlinkSync(DATA_FILE);
-        }
-        fs.renameSync(tempFile, DATA_FILE);
-        
+        fs.writeFileSync(DATA_FILE, dataToSave, 'utf8');
         console.log(`💾 Saved ${jsonData.length} records to data.json`);
         return true;
     } catch (error) {
         console.error('❌ Error saving data.json:', error.message);
-        
-        // Clean up temp file if it exists
-        const tempFile = `${DATA_FILE}.tmp`;
-        if (fs.existsSync(tempFile)) {
-            try {
-                fs.unlinkSync(tempFile);
-            } catch (cleanupError) {
-                console.error('❌ Failed to cleanup temp file:', cleanupError.message);
-            }
-        }
-        
         return false;
     }
 }
@@ -149,7 +156,7 @@ app.get('/health', (req, res) => {
     res.json(healthData);
 });
 
-// Serve data.json directly (IMPORTANT: This fixes the 404 error)
+// Serve data.json directly
 app.get('/data.json', (req, res) => {
     try {
         res.setHeader('Content-Type', 'application/json');
@@ -158,7 +165,7 @@ app.get('/data.json', (req, res) => {
         res.setHeader('Expires', '0');
         
         res.json(jsonData);
-        console.log(`📡 Served data.json with ${jsonData.length} records`);
+        console.log(`📡 Served data.json with ${jsonData.length} records to ${req.ip}`);
     } catch (error) {
         console.error('❌ Error serving data.json:', error);
         res.status(500).json({ 
@@ -238,19 +245,6 @@ app.post('/api/save', (req, res) => {
             });
         }
         
-        // Validate data structure
-        const hasValidStructure = req.body.every(item => 
-            typeof item === 'object' && item !== null
-        );
-        
-        if (!hasValidStructure) {
-            return res.status(400).json({ 
-                success: false,
-                error: 'Invalid data structure - all items must be objects',
-                timestamp: new Date().toISOString()
-            });
-        }
-        
         // Update data
         jsonData = req.body;
         const saveSuccess = saveDataFile();
@@ -281,7 +275,7 @@ app.post('/api/save', (req, res) => {
     }
 });
 
-// Legacy save endpoint for backward compatibility
+// Legacy save endpoint
 app.post('/save', (req, res) => {
     try {
         if (!Array.isArray(req.body)) {
@@ -339,7 +333,7 @@ app.get('/api/stats', (req, res) => {
     }
 });
 
-// Debug endpoint to check file system
+// Debug endpoint
 app.get('/debug', (req, res) => {
     try {
         const debugInfo = {
@@ -347,10 +341,12 @@ app.get('/debug', (req, res) => {
             workingDirectory: __dirname,
             dataFilePath: DATA_FILE,
             dataFileExists: fs.existsSync(DATA_FILE),
-            filesInDirectory: fs.readdirSync(__dirname),
+            filesInDirectory: fs.readdirSync(__dirname).filter(f => !f.startsWith('.')),
             records: jsonData.length,
             environment: NODE_ENV,
-            port: PORT
+            port: PORT,
+            nodeVersion: process.version,
+            memoryUsage: process.memoryUsage()
         };
         
         res.json(debugInfo);
@@ -365,25 +361,16 @@ app.get('/debug', (req, res) => {
 // Error handling middleware
 app.use((err, req, res, next) => {
     console.error('🚨 Server error:', err);
-    
-    const errorResponse = {
+    res.status(500).json({
         error: 'Internal Server Error',
-        timestamp: new Date().toISOString(),
-        path: req.path,
-        method: req.method
-    };
-    
-    if (NODE_ENV === 'development') {
-        errorResponse.message = err.message;
-        errorResponse.stack = err.stack;
-    }
-    
-    res.status(500).json(errorResponse);
+        message: NODE_ENV === 'development' ? err.message : 'Something went wrong',
+        timestamp: new Date().toISOString()
+    });
 });
 
 // 404 handler
 app.use((req, res) => {
-    console.log(`❌ 404: ${req.method} ${req.path}`);
+    console.log(`❌ 404: ${req.method} ${req.path} from ${req.ip}`);
     
     res.status(404).json({ 
         error: 'Endpoint not found',
@@ -403,39 +390,17 @@ app.use((req, res) => {
     });
 });
 
-// Graceful shutdown handlers
-const gracefulShutdown = (signal) => {
-    console.log(`\n🛑 Received ${signal}, shutting down gracefully...`);
-    
-    try {
-        console.log('💾 Saving data before shutdown...');
-        saveDataFile();
-        console.log('✅ Data saved successfully');
-    } catch (error) {
-        console.error('❌ Error saving data during shutdown:', error);
-    }
-    
-    console.log('👋 Goodbye!');
+// Graceful shutdown
+process.on('SIGTERM', () => {
+    console.log('🛑 SIGTERM received, saving data and shutting down...');
+    saveDataFile();
     process.exit(0);
-};
-
-process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
-process.on('SIGINT', () => gracefulShutdown('SIGINT'));
-
-// Handle uncaught exceptions
-process.on('uncaughtException', (error) => {
-    console.error('🚨 Uncaught Exception:', error);
-    try {
-        saveDataFile();
-    } catch (saveError) {
-        console.error('❌ Failed to save data on crash:', saveError);
-    }
-    process.exit(1);
 });
 
-// Handle unhandled promise rejections
-process.on('unhandledRejection', (reason, promise) => {
-    console.error('🚨 Unhandled Rejection at:', promise, 'reason:', reason);
+process.on('SIGINT', () => {
+    console.log('🛑 SIGINT received, saving data and shutting down...');
+    saveDataFile();
+    process.exit(0);
 });
 
 // Start server
@@ -448,25 +413,17 @@ const server = app.listen(PORT, '0.0.0.0', () => {
     console.log(`🏥 Health Check: http://0.0.0.0:${PORT}/health`);
     console.log(`🔧 Debug Info: http://0.0.0.0:${PORT}/debug`);
     console.log('═'.repeat(70));
-    console.log('📡 Available API Endpoints:');
-    console.log('   GET  /api/data   - Fetch all data');
-    console.log('   POST /api/save   - Save data');
-    console.log('   GET  /api/stats  - Get statistics');
-    console.log('   POST /save       - Legacy save endpoint');
-    console.log('   GET  /data.json  - Direct data access (FIXED!)');
-    console.log('═'.repeat(70));
     console.log(`🔐 Admin Credentials: admin/${ADMIN_PASSWORD}`);
     console.log(`📁 Data Storage: ${DATA_FILE}`);
     console.log(`🌍 Environment: ${NODE_ENV}`);
     console.log(`📦 Node Version: ${process.version}`);
-    console.log(`💾 Memory Usage: ${Math.round(process.memoryUsage().heapUsed / 1024 / 1024)}MB`);
     console.log(`📊 Records Loaded: ${jsonData.length}`);
     console.log('═'.repeat(70));
     console.log('✅ Ready to serve requests!');
-    console.log('🔧 Try: curl http://localhost:' + PORT + '/data.json');
+    console.log('🔧 Authentication: Basic Auth with admin/password');
+    console.log('📝 Note: Use admin/' + ADMIN_PASSWORD + ' to login');
 });
 
-// Server error handling
 server.on('error', (error) => {
     if (error.code === 'EADDRINUSE') {
         console.error(`❌ Port ${PORT} is already in use`);
