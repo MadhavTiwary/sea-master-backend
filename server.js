@@ -7,7 +7,7 @@ const app = express();
 
 // Configuration
 const PORT = process.env.PORT || 8000;
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'pakistanmc';
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'Safeuser';
 const NODE_ENV = process.env.NODE_ENV || 'development';
 
 console.log('🚀 Starting SEA MASTER Dashboard Server...');
