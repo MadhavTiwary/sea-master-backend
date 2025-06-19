@@ -16,7 +16,7 @@
             background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
             min-height: 100vh;
             color: #333;
-            font-size: 12px;
+            font-size: 14px;
             line-height: 1.4;
         }
 
@@ -37,24 +37,29 @@
         }
 
         @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         h1 {
             color: #1e3c72;
             margin-bottom: 15px;
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             font-weight: 700;
             display: flex;
             align-items: center;
             gap: 10px;
+            flex-wrap: wrap;
         }
 
         .header img {
@@ -69,6 +74,7 @@
             gap: 15px;
             flex-wrap: wrap;
             align-items: center;
+            margin-bottom: 15px;
         }
 
         .file-input-wrapper {
@@ -92,6 +98,7 @@
             transition: all 0.3s ease;
             font-weight: 600;
             box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            font-size: 14px;
         }
 
         .file-input-label:hover {
@@ -100,12 +107,12 @@
         }
 
         input[type="text"] {
-            padding: 10px 16px;
+            padding: 12px 16px;
             border: 2px solid #e0e0e0;
             border-radius: 10px;
             font-size: 14px;
             transition: all 0.3s ease;
-            width: 300px;
+            min-width: 250px;
         }
 
         input[type="text"]:focus {
@@ -115,7 +122,7 @@
         }
 
         button {
-            padding: 10px 20px;
+            padding: 12px 20px;
             border: none;
             border-radius: 10px;
             font-size: 14px;
@@ -140,8 +147,8 @@
             color: white;
         }
 
-        .btn-warning {
-            background: linear-gradient(135deg, #f39c12 0%, #f5b041 100%);
+        .btn-info {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
             color: white;
         }
 
@@ -150,61 +157,199 @@
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
         }
 
-        .stats {
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .status-online {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-offline {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .status-loading {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .info-panel {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            font-size: 13px;
+        }
+
+        .info-item {
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .info-item strong {
+            color: #1e3c72;
+        }
+
+        .admin-panel {
+            background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+            border: 2px solid #90caf9;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 10px;
+        }
+
+        .admin-panel h3 {
+            color: #1565c0;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .admin-controls {
+            display: flex;
             gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .admin-only {
+            display: none;
+        }
+
+        .filter-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
             margin-bottom: 20px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+
+        .filter-panel h3 {
+            margin-bottom: 15px;
+            color: #1e3c72;
+            font-size: 1.3rem;
+        }
+
+        .filter-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .filter-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .filter-group select, 
+        .filter-group input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        .filter-group select:focus, 
+        .filter-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .filter-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .stats-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
         }
 
         .stat-card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            padding: 12px;
-            border-radius: 10px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 20px;
+            border-radius: 12px;
             text-align: center;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border: 1px solid #dee2e6;
             transition: all 0.3s ease;
-            animation: fadeIn 0.5s ease-out;
-            position: relative;
         }
 
         .stat-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
         }
 
         .stat-number {
-            font-size: 1.8rem;
+            font-size: 2.5rem;
             font-weight: 700;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            background-clip: text;
             margin-bottom: 5px;
         }
 
-        .stat-card div:last-child {
-            font-size: 0.75rem;
+        .stat-label {
+            font-size: 12px;
             color: #666;
             text-transform: uppercase;
             font-weight: 600;
+            letter-spacing: 0.5px;
         }
 
-        /* Status chart visualization */
-        .status-chart {
-            margin-top: 20px;
+        .chart-panel {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
-            padding: 20px;
             border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            display: none;
         }
 
         .chart-title {
-            font-size: 1.1rem;
+            font-size: 1.3rem;
             font-weight: 700;
             color: #1e3c72;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             text-align: center;
         }
 
@@ -212,10 +357,11 @@
             display: flex;
             align-items: flex-end;
             justify-content: space-around;
-            height: 150px;
-            padding: 10px;
-            border-bottom: 2px solid #e0e0e0;
-            margin-bottom: 10px;
+            height: 200px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-bottom: 15px;
         }
 
         .chart-bar {
@@ -223,13 +369,13 @@
             flex-direction: column;
             align-items: center;
             flex: 1;
-            max-width: 80px;
+            max-width: 100px;
             margin: 0 5px;
         }
 
         .bar {
             width: 100%;
-            min-height: 20px;
+            min-height: 30px;
             background: linear-gradient(to top, #667eea, #764ba2);
             border-radius: 8px 8px 0 0;
             transition: all 0.3s ease;
@@ -244,123 +390,49 @@
 
         .bar-value {
             position: absolute;
-            top: -25px;
+            top: -30px;
             width: 100%;
             text-align: center;
             font-weight: 700;
             color: #1e3c72;
-            font-size: 0.9rem;
+            font-size: 14px;
         }
 
         .bar-label {
-            margin-top: 8px;
-            font-size: 0.7rem;
+            margin-top: 10px;
+            font-size: 11px;
             text-transform: uppercase;
             color: #666;
             font-weight: 600;
             text-align: center;
+            line-height: 1.2;
         }
 
-        .bar.status-open {
-            background: linear-gradient(to top, #3498db, #5dade2);
-        }
-
-        .bar.status-resolve {
-            background: linear-gradient(to top, #27ae60, #52be80);
-        }
-
-        .bar.status-hold {
-            background: linear-gradient(to top, #e74c3c, #ec7063);
-        }
-
-        .bar.status-pending {
-            background: linear-gradient(to top, #f39c12, #f5b041);
-        }
-
-        .bar.status-completed {
-            background: linear-gradient(to top, #27ae60, #52be80);
-        }
-
-        .bar.status-rejected {
-            background: linear-gradient(to top, #e74c3c, #ec7063);
-        }
-
-        .bar.status-inprogress {
-            background: linear-gradient(to top, #9b59b6, #bb8fce);
-        }
-
-        .filter-panel {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        .filter-panel h3 {
-            margin-bottom: 15px;
-            color: #1e3c72;
-            font-size: 1.2rem;
-        }
-
-        .filter-controls {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 15px;
-        }
-
-        .filter-group {
-            margin-bottom: 10px;
-        }
-
-        .filter-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 600;
-            color: #555;
-        }
-
-        .filter-group select, 
-        .filter-group input {
-            width: 100%;
-            padding: 8px 12px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 14px;
-        }
-
-        .filter-group select:focus, 
-        .filter-group input:focus {
-            outline: none;
-            border-color: #667eea;
-        }
+        .bar.pending { background: linear-gradient(to top, #f39c12, #f5b041); }
+        .bar.completed { background: linear-gradient(to top, #27ae60, #52be80); }
+        .bar.rejected { background: linear-gradient(to top, #e74c3c, #ec7063); }
+        .bar.inprogress { background: linear-gradient(to top, #9b59b6, #bb8fce); }
+        .bar.open { background: linear-gradient(to top, #3498db, #5dade2); }
+        .bar.hold { background: linear-gradient(to top, #e67e22, #f39c12); }
 
         .table-container {
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(255, 255, 255, 0.98);
             backdrop-filter: blur(10px);
             border-radius: 20px;
-            overflow: auto;
+            overflow: hidden;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             animation: slideUp 0.5s ease-out;
-            max-height: 600px;
         }
 
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .table-wrapper {
+            overflow-x: auto;
+            max-height: 70vh;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            min-width: 800px;
+            font-size: 13px;
         }
 
         thead {
@@ -371,15 +443,19 @@
             z-index: 10;
         }
 
-        th, td {
-            padding: 8px;
+        th {
+            padding: 15px 10px;
             text-align: left;
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 12px 10px;
             border-bottom: 1px solid #f0f0f0;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 200px;
-            font-size: 11px;
+            vertical-align: top;
         }
 
         tbody tr {
@@ -389,17 +465,68 @@
 
         tbody tr:hover {
             background-color: #f8f9fa;
-            transform: scale(1.01);
+            transform: scale(1.002);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #fafafa;
+        }
+
+        .cell-content {
+            max-width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .cell-expanded {
+            white-space: normal;
+            word-break: break-word;
         }
 
         .action-buttons {
             display: flex;
-            gap: 10px;
+            gap: 8px;
+            flex-wrap: wrap;
         }
 
         .action-buttons button {
-            padding: 8px 16px;
-            font-size: 14px;
+            padding: 6px 12px;
+            font-size: 12px;
+            min-width: auto;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-pending { background: #fff3cd; color: #856404; }
+        .status-completed { background: #d4edda; color: #155724; }
+        .status-rejected { background: #f8d7da; color: #721c24; }
+        .status-inprogress { background: #cce5ff; color: #004085; }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+
+        .empty-state h2 {
+            margin-bottom: 15px;
+            color: #333;
+            font-size: 1.5rem;
+        }
+
+        .empty-state p {
+            font-size: 16px;
+            margin-bottom: 20px;
         }
 
         .modal {
@@ -409,7 +536,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.6);
             backdrop-filter: blur(5px);
             z-index: 1000;
             animation: fadeIn 0.3s ease-out;
@@ -421,53 +548,44 @@
             left: 50%;
             transform: translate(-50%, -50%);
             background: white;
-            padding: 40px;
+            padding: 30px;
             border-radius: 20px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            max-width: 90%;
+            max-width: 90vw;
             width: 800px;
             max-height: 90vh;
             overflow-y: auto;
-            animation: scaleIn 0.3s ease-out;
-        }
-
-        @keyframes scaleIn {
-            from {
-                opacity: 0;
-                transform: translate(-50%, -50%) scale(0.8);
-            }
-            to {
-                opacity: 1;
-                transform: translate(-50%, -50%) scale(1);
-            }
         }
 
         .modal-header {
-            margin-bottom: 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
         }
 
         .modal-header h2 {
             color: #1e3c72;
             font-size: 1.5rem;
+            margin: 0;
         }
 
         .close-btn {
             background: none;
             border: none;
-            font-size: 28px;
+            font-size: 24px;
             color: #666;
             cursor: pointer;
-            padding: 0;
-            width: 40px;
-            height: 40px;
+            padding: 5px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            width: 35px;
+            height: 35px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 50%;
-            transition: all 0.3s ease;
         }
 
         .close-btn:hover {
@@ -491,12 +609,15 @@
             margin-bottom: 8px;
             font-weight: 600;
             color: #333;
+            font-size: 14px;
         }
 
-        .form-group input, .form-group textarea {
+        .form-group input, 
+        .form-group textarea, 
+        .form-group select {
             width: 100%;
-            padding: 10px;
-            border: 2px solid #e0e0f0;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
             border-radius: 10px;
             font-size: 14px;
             transition: all 0.3s ease;
@@ -508,7 +629,9 @@
             resize: vertical;
         }
 
-        .form-group input:focus, .form-group textarea:focus {
+        .form-group input:focus, 
+        .form-group textarea:focus, 
+        .form-group select:focus {
             outline: none;
             border-color: #667eea;
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
@@ -516,9 +639,49 @@
 
         .form-group input[readonly],
         .form-group textarea[readonly] {
-            background-color: #f5f5f5;
+            background-color: #f8f9fa;
             color: #666;
             cursor: not-allowed;
+        }
+
+        .view-mode {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+        }
+
+        .view-mode h3 {
+            margin-bottom: 20px;
+            color: #1e3c72;
+            font-size: 1.3rem;
+        }
+
+        .data-grid {
+            display: grid;
+            gap: 15px;
+        }
+
+        .data-item {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 15px;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            align-items: start;
+            border-left: 4px solid #667eea;
+        }
+
+        .data-label {
+            font-weight: 600;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .data-value {
+            word-break: break-word;
+            font-size: 14px;
+            line-height: 1.5;
         }
 
         .modal-footer {
@@ -526,21 +689,11 @@
             gap: 15px;
             justify-content: flex-end;
             padding-top: 20px;
-            border-top: 1px solid #e0e0f0;
+            border-top: 2px solid #f0f0f0;
+            margin-top: 20px;
         }
 
-        .empty-state {
-            text-align: center;
-            padding: 60px;
-            color: #666;
-        }
-
-        .empty-state h2 {
-            margin-bottom: 20px;
-            color: #333;
-        }
-
-        #notification {
+        .notification {
             position: fixed;
             top: 20px;
             right: 20px;
@@ -552,472 +705,546 @@
             transform: translateX(400px);
             transition: transform 0.3s ease-out;
             z-index: 2000;
+            max-width: 300px;
+            font-weight: 500;
         }
 
-        a {
-            color: #667eea;
-            text-decoration: none;
-            transition: all 0.3s ease;
+        .notification.error {
+            background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
         }
 
-        a:hover {
-            color: #764ba2;
-            text-decoration: underline;
+        .notification.info {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+        }
+
+        .notification.show {
+            transform: translateX(0);
         }
 
         .clickable-link {
             color: #667eea;
-            cursor: pointer;
-            text-decoration: underline;
+            text-decoration: none;
+            border-bottom: 1px dotted #667eea;
+            transition: all 0.3s ease;
         }
 
         .clickable-link:hover {
             color: #764ba2;
+            border-bottom-style: solid;
         }
 
-        .view-mode {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-        }
-
-        .view-mode h3 {
-            margin-bottom: 15px;
-            color: #1e3c72;
-        }
-
-        .view-mode .data-display {
-            display: grid;
-            gap: 15px;
-        }
-
-        .view-mode .data-item {
-            display: grid;
-            grid-template-columns: 200px 1fr;
-            gap: 15px;
-            padding: 10px;
-            background: white;
-            border-radius: 8px;
-            align-items: start;
-        }
-
-        .view-mode .data-label {
-            font-weight: 600;
-            color: #666;
-        }
-
-        .view-mode .data-value {
-            word-break: break-word;
-        }
-
-        .admin-only {
-            display: none;
-        }
-
-        .status-badge {
+        .loading-spinner {
             display: inline-block;
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 600;
-            text-transform: uppercase;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
         }
 
-        .status-pending {
-            background-color: #fff3cd;
-            color: #856404;
-        }
-
-        .status-completed {
-            background-color: #d4edda;
-            color: #155724;
-        }
-
-        .status-rejected {
-            background-color: #f8d7da;
-            color: #721c24;
-        }
-
-        .status-inprogress {
-            background-color: #cce5ff;
-            color: #004085;
-        }
-
-        /* GitHub Instructions Styles */
-        .github-instructions {
-            background: rgba(255, 252, 230, 0.95);
-            border: 2px solid #f39c12;
-            border-radius: 15px;
-            padding: 20px;
-            margin: 20px 0;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .github-instructions h3 {
-            color: #e67e22;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .github-instructions ol {
-            margin-left: 20px;
-            color: #d35400;
-        }
-
-        .github-instructions li {
-            margin-bottom: 8px;
-            line-height: 1.5;
-        }
-
-        .github-instructions code {
-            background: #f8f9fa;
-            padding: 2px 6px;
-            border-radius: 4px;
-            color: #d63384;
-            font-family: 'Courier New', monospace;
-        }
-
-        .auto-download-notice {
-            background: rgba(230, 247, 255, 0.95);
-            border: 2px solid #3498db;
-            border-radius: 10px;
-            padding: 15px;
-            margin: 15px 0;
-            color: #1565c0;
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         @media (max-width: 768px) {
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .view-mode .data-item {
-                grid-template-columns: 1fr;
-            }
-            
-            .table-container {
-                max-height: 400px;
-            }
-            
-            .filter-controls {
-                grid-template-columns: 1fr;
-            }
-            
-            .controls {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            
-            input[type="text"] {
-                width: 100%;
-            }
+            .container { padding: 5px; }
+            .header { padding: 15px; }
+            h1 { font-size: 1.4rem; }
+            .controls { flex-direction: column; align-items: stretch; }
+            input[type="text"] { min-width: auto; }
+            .form-grid { grid-template-columns: 1fr; }
+            .data-item { grid-template-columns: 1fr; }
+            .filter-controls { grid-template-columns: 1fr; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .modal-content { width: 95vw; padding: 20px; }
+            .action-buttons { flex-direction: column; }
+            .info-panel { grid-template-columns: 1fr; }
+            .admin-controls { flex-direction: column; align-items: stretch; }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid { grid-template-columns: 1fr; }
+            .chart-container { height: 150px; padding: 10px; }
+            th, td { padding: 8px 5px; font-size: 11px; }
         }
     </style>
 </head>
 <body>
     <div class="container">
+        <!-- Header Section -->
         <div class="header">
-            <h1>📊 SEA MASTER - Layer Feedback Tracker</h1>
+            <h1>
+                📊 SEA MASTER - Layer Feedback Tracker
+                <span id="connectionStatus" class="status-indicator status-loading">
+                    <span class="loading-spinner"></span> Connecting...
+                </span>
+            </h1>
+            
             <img 
                 src="https://th.bing.com/th/id/R.e7b9c51d08d56a5b39f7c8a8d4c82d1c?rik=sf6WpzmhZ89Q6A&riu=http%3a%2f%2fforum.mappls.com%2fuploads%2fdefault%2foriginal%2f1X%2f86b6560c8d8137741b6b955fd9838a03e9af5308.png&ehk=tdH5AJ44f95OX4S6rI8OEArNM0rbcG0NiEAZLL91exk%3d&risl=&pid=ImgRaw&r=0" 
                 alt="Mappls MapmyIndia Logo"
+                onerror="this.style.display='none'"
             />
             
-            <!-- GitHub Instructions Panel -->
-            <div class="github-instructions">
-                <h3>🚀 GitHub Pages Setup Instructions</h3>
-                <ol>
-                    <li>After making changes, click <strong>"💾 Download Updated JSON"</strong> button below</li>
-                    <li>Save the downloaded file as <code>data.json</code> in your GitHub repository</li>
-                    <li>Commit and push: <code>git add data.json && git commit -m "Update data" && git push</code></li>
-                    <li>Changes will appear on GitHub Pages in 1-2 minutes</li>
-                </ol>
-                <div class="auto-download-notice">
-                    <strong>💡 Tip:</strong> Changes are automatically downloaded when you save items. Check your Downloads folder!
-                </div>
-            </div>
-
+            <!-- Controls -->
             <div class="controls">
                 <div class="file-input-wrapper">
                     <input type="file" id="fileInput" accept=".json,.csv">
-                    <label for="fileInput" class="file-input-label">📁 Upload JSON/CSV</label>
+                    <label for="fileInput" class="file-input-label">📁 Upload Data</label>
                 </div>
-                <input type="text" id="searchInput" placeholder="🔍 Search data...">
-                <button onclick="addNewItem()" class="btn-success admin-only">➕ Add New Item</button>
-                <button onclick="downloadUpdatedData()" class="btn-warning">💾 Download Updated JSON</button>
-                <button onclick="loadSampleData()" class="btn-primary">🔄 Load Sample Data</button>
-                <button onclick="toggleFilterPanel()" class="btn-primary">🔍 Show Filters</button>
+                <input type="text" id="searchInput" placeholder="🔍 Search all data...">
+                <button onclick="toggleFilterPanel()" class="btn-primary">🔍 Filters</button>
+                <button onclick="addNewItem()" class="btn-success admin-only">➕ Add New</button>
+                <button onclick="manualSaveData()" class="btn-success">💾 Save Now</button>
+                <button onclick="exportData()" class="btn-info">💾 Export</button>
+                <button onclick="reloadData()" class="btn-primary" id="reloadBtn">🔄 Reload</button>
+                <button onclick="checkHealth()" class="btn-info">🏥 Health</button>
             </div>
-            <div style="margin-top: 15px; font-size: 14px; color: #666;">
-                <span id="lastUpdate" style="margin-left: 20px;"></span>
-                <div style="margin-top: 10px; padding: 10px; background: #d4edda; border: 1px solid #c3e6cb; border-radius: 5px; color: #155724;">
-                    <strong>✅ Auto-Download Enabled:</strong> All changes trigger automatic downloads for GitHub updates.
+            
+            <!-- Info Panel -->
+            <div class="info-panel">
+                <div class="info-item">
+                    <strong>Data Source:</strong> <code id="dataSource">./data.json</code>
                 </div>
-                <div style="margin-top: 10px; padding: 10px; background: #e3f2fd; border: 1px solid #90caf9; border-radius: 5px; color: #1565c0;">
-                    <strong>🌐 Admin: Madhav Tiwary </strong>
-                    <span id="adminStatus">Not Logged In</span>
-                    <button onclick="adminLogin()" id="adminLoginBtn" class="btn-primary" style="margin-left: 10px; padding: 5px 10px; font-size: 12px;">Login</button>
-                    <button onclick="adminLogout()" id="adminLogoutBtn" class="btn-danger" style="margin-left: 10px; padding: 5px 10px; font-size: 12px; display: none;">Logout</button>
-                    <span id="currentUserDisplay" style="margin-left: 20px; font-weight: normal;"></span>
+                <div class="info-item">
+                    <strong>Last Updated:</strong> <span id="lastUpdate">Never</span>
                 </div>
+                <div class="info-item">
+                    <strong>Auto-Save:</strong> <span id="autoSaveStatus">✅ Enabled</span>
+                </div>
+                <div class="info-item">
+                    <strong>Current User:</strong> <span id="currentUser">Loading...</span>
+                </div>
+            </div>
+            
+            <!-- Admin Panel -->
+            <div class="admin-panel">
+                <h3>🔐 Admin Panel</h3>
+                <div class="admin-controls">
+                    <span>Status: <strong id="adminStatus">Not Logged In</strong></span>
+                    <button onclick="adminLogin()" id="adminLoginBtn" class="btn-primary">Login</button>
+                    <button onclick="adminLogout()" id="adminLogoutBtn" class="btn-danger" style="display: none;">Logout</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Panel -->
+        <div class="stats-panel" id="statsPanel" style="display: none;">
+            <h3>📈 Data Statistics</h3>
+            <div class="stats-grid" id="statsGrid">
+                <!-- Stats will be populated here -->
             </div>
         </div>
 
         <!-- Filter Panel -->
-        <div class="filter-panel" id="filterPanel" style="display: none;">
-            <h3>🔍 Filter Data</h3>
+        <div class="filter-panel" id="filterPanel">
+            <h3>🔍 Advanced Filters</h3>
             <div class="filter-controls" id="filterControls">
                 <!-- Filter controls will be generated dynamically -->
             </div>
-            <div style="margin-top: 15px; display: flex; gap: 10px;">
-                <button onclick="applyFilters()" class="btn-primary">Apply Filters</button>
-                <button onclick="resetFilters()" class="btn-danger">Reset Filters</button>
+            <div class="filter-actions">
+                <button onclick="applyFilters()" class="btn-success">Apply Filters</button>
+                <button onclick="resetFilters()" class="btn-danger">Reset All</button>
                 <button onclick="toggleFilterPanel()" class="btn-primary">Hide Filters</button>
             </div>
         </div>
         
-        <!-- Status Chart Visualization -->
-        <div class="status-chart" id="statusChart" style="display: none;">
+        <!-- Chart Panel -->
+        <div class="chart-panel" id="chartPanel">
             <div class="chart-title">📊 Status Distribution</div>
-            <div class="chart-container" id="chartContainer"></div>
+            <div class="chart-container" id="chartContainer">
+                <!-- Chart bars will be generated here -->
+            </div>
         </div>
 
+        <!-- Table Container -->
         <div class="table-container">
-            <div id="tableContainer"></div>
+            <div class="table-wrapper">
+                <div id="tableContainer">
+                    <div class="empty-state">
+                        <h2>🚀 Loading Data...</h2>
+                        <p>Please wait while we load your data</p>
+                        <div class="loading-spinner" style="margin: 20px auto;"></div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
+    <!-- Modal -->
     <div id="modal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 id="modalTitle">View/Edit Item</h2>
+                <h2 id="modalTitle">Item Details</h2>
                 <button class="close-btn" onclick="closeModal()">×</button>
             </div>
-            <div id="modalBody"></div>
-            <div class="modal-footer" id="modalFooter"></div>
+            <div id="modalBody">
+                <!-- Modal content will be populated here -->
+            </div>
+            <div class="modal-footer" id="modalFooter">
+                <!-- Modal buttons will be populated here -->
+            </div>
         </div>
     </div>
 
-    <div id="notification"></div>
+    <!-- Notification -->
+    <div id="notification" class="notification"></div>
 
     <script>
-        // Configuration for GitHub Pages
+        // ==========================================
+        // CONFIGURATION & GLOBAL VARIABLES
+        // ==========================================
+        
         const CONFIG = {
+            dataPath: './data.json',
+            apiPath: '/api/data',
+            savePath: '/api/save',
+            healthPath: '/health',
+            autoReload: true,
+            reloadInterval: 30000, // 30 seconds
             autoSave: true,
             adminPassword: 'pakistanmc',
             editableByAll: ['Production_Team_Remark', 'Status'],
             statusColors: {
-                'Pending': 'status-pending',
-                'Completed': 'status-completed',
-                'Rejected': 'status-rejected',
-                'In Progress': 'status-inprogress'
+                'Pending': 'pending',
+                'Completed': 'completed',
+                'Rejected': 'rejected',
+                'In Progress': 'inprogress',
+                'Open': 'open',
+                'Hold': 'hold'
             }
         };
 
-        let jsonData = [];
-        let filteredData = [];
-        let editingIndex = -1;
-        let isEditing = false;
-        let currentViewMode = 'view';
-        let activeFilters = {};
-        let currentSearchTerm = '';
-        let isUserInteracting = false;
-        let lastDataUpdate = null;
-        let isAdmin = false;
-        let currentUser = '';
+        // Global State
+        let appState = {
+            jsonData: [],
+            filteredData: [],
+            activeFilters: {},
+            currentSearchTerm: '',
+            isUserInteracting: false,
+            isOnline: true,
+            isAdmin: false,
+            currentUser: '',
+            editingIndex: -1,
+            currentViewMode: 'view',
+            lastDataUpdate: null,
+            retryCount: 0,
+            maxRetries: 3
+        };
 
-        // Sample data for initial load
-        const sampleData = [
-            {
-                "Date": "06-05-2025",
-                "Country": "SG",
-                "Issue_Id": "SG_0001",
-                "From": "DLV",
-                "Layer": "3d map POI",
-                "Description": "Review address points (quality level, category priority, and secondary status) in those containing POI ID in 3D POI map",
-                "Multiple_Errror_links": "",
-                "Production_Team_Remark": "Issue Resolve",
-                "Priority": "High",
-                "Status": "Resolve",
-                "Comments": "Need to be Corrected",
-                "Edited_By": "System",
-                "Last_Edit_Date": "18/6/2025, 4:09:00 pm"
-            },
-            {
-                "Date": "06-05-2025",
-                "Country": "IDN",
-                "Issue_Id": "ID_001",
-                "From": "TLT",
-                "Layer": "Addr_Region",
-                "Description": "Review height class and subclass columns in addr_region",
-                "Multiple_Errror_links": "",
-                "Production_Team_Remark": "",
-                "Priority": "High",
-                "Status": "Open",
-                "Comments": "Review required"
+        // ==========================================
+        // UTILITY FUNCTIONS
+        // ==========================================
+
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        function sanitizeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function formatDate(date) {
+            if (!date) return 'N/A';
+            return new Date(date).toLocaleString();
+        }
+
+        function makeLinksClickable(text) {
+            if (!text) return '';
+            text = String(text);
+            const urlRegex = /(https?:\/\/[^\s<>"]+)/g;
+            return text.replace(urlRegex, (url) => {
+                return `<a href="${url}" target="_blank" class="clickable-link" onclick="event.stopPropagation()">${url}</a>`;
+            });
+        }
+
+        // ==========================================
+        // CONNECTION & STATUS MANAGEMENT
+        // ==========================================
+
+        function updateConnectionStatus(status, message = '') {
+            const statusElement = document.getElementById('connectionStatus');
+            statusElement.className = `status-indicator status-${status}`;
+            
+            switch(status) {
+                case 'online':
+                    statusElement.innerHTML = '🟢 Online';
+                    appState.isOnline = true;
+                    appState.retryCount = 0;
+                    break;
+                case 'offline':
+                    statusElement.innerHTML = '🔴 Offline';
+                    appState.isOnline = false;
+                    break;
+                case 'loading':
+                    statusElement.innerHTML = '<span class="loading-spinner"></span> Loading...';
+                    break;
+                case 'error':
+                    statusElement.innerHTML = '⚠️ Error';
+                    appState.isOnline = false;
+                    break;
             }
-        ];
+        }
 
-        // Get user identifier function
+        async function fetchWithRetry(url, options = {}) {
+            updateConnectionStatus('loading');
+            
+            for (let i = 0; i <= appState.maxRetries; i++) {
+                try {
+                    const response = await fetch(url, {
+                        ...options,
+                        headers: {
+                            'Content-Type': 'application/json',
+                            ...options.headers
+                        }
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+                    
+                    updateConnectionStatus('online');
+                    return response;
+                } catch (error) {
+                    console.error(`Fetch attempt ${i + 1} failed:`, error);
+                    
+                    if (i === appState.maxRetries) {
+                        updateConnectionStatus('error');
+                        throw error;
+                    }
+                    
+                    // Wait before retry with exponential backoff
+                    await new Promise(resolve => setTimeout(resolve, Math.pow(2, i) * 1000));
+                }
+            }
+        }
+
+        // ==========================================
+        // USER MANAGEMENT
+        // ==========================================
+
         function getUserIdentifier() {
             let userId = localStorage.getItem('seaMasterUserId');
             if (!userId) {
-                userId = prompt('Please enter your name:');
-                if (!userId || userId.trim() === '') {
-                    userId = 'Anonymous';
-                }
-                userId = userId.trim();
+                userId = prompt('Please enter your name:') || 'Anonymous';
                 localStorage.setItem('seaMasterUserId', userId);
             }
-            currentUser = userId;
-            
-            const userDisplay = document.getElementById('currentUserDisplay');
-            if (userDisplay) {
-                userDisplay.textContent = `Current User: ${currentUser}`;
-            }
-            
+            appState.currentUser = userId;
+            document.getElementById('currentUser').textContent = userId;
             return userId;
         }
 
-        // Admin functions
         function checkAdminStatus() {
-            isAdmin = localStorage.getItem('seaMasterAdmin') === 'true';
+            appState.isAdmin = localStorage.getItem('seaMasterAdmin') === 'true';
             updateAdminUI();
         }
 
         function adminLogin() {
             const password = prompt('Enter admin password:');
             if (password === CONFIG.adminPassword) {
-                isAdmin = true;
+                appState.isAdmin = true;
                 localStorage.setItem('seaMasterAdmin', 'true');
                 updateAdminUI();
-                showNotification('Admin login successful');
+                showNotification('Admin login successful', 'success');
             } else {
-                showNotification('Invalid password', 'error');
+                showNotification('Invalid admin password', 'error');
             }
         }
 
         function adminLogout() {
-            isAdmin = false;
+            appState.isAdmin = false;
             localStorage.removeItem('seaMasterAdmin');
             updateAdminUI();
-            showNotification('Admin logged out');
+            showNotification('Admin logged out', 'info');
         }
 
         function updateAdminUI() {
-            document.getElementById('adminStatus').textContent = isAdmin ? 'Logged In' : 'Not Logged In';
-            document.getElementById('adminLoginBtn').style.display = isAdmin ? 'none' : 'inline-block';
-            document.getElementById('adminLogoutBtn').style.display = isAdmin ? 'inline-block' : 'none';
+            document.getElementById('adminStatus').textContent = appState.isAdmin ? 'Logged In' : 'Not Logged In';
+            document.getElementById('adminLoginBtn').style.display = appState.isAdmin ? 'none' : 'inline-block';
+            document.getElementById('adminLogoutBtn').style.display = appState.isAdmin ? 'inline-block' : 'none';
             
-            // Show/hide admin-only elements
             document.querySelectorAll('.admin-only').forEach(el => {
-                el.style.display = isAdmin ? 'inline-block' : 'none';
+                el.style.display = appState.isAdmin ? 'inline-block' : 'none';
             });
         }
 
-        // Auto-download function for GitHub Pages
-        function downloadUpdatedData() {
-            if (jsonData.length === 0) {
-                showNotification('No data to download!', 'error');
+        // ==========================================
+        // DATA MANAGEMENT
+        // ==========================================
+
+        // Add manual save button functionality
+        async function manualSave() {
+            const saveBtn = document.createElement('button');
+            saveBtn.textContent = '💾 Save Now';
+            saveBtn.className = 'btn-success';
+            saveBtn.onclick = async () => {
+                saveBtn.disabled = true;
+                saveBtn.innerHTML = '<span class="loading-spinner"></span> Saving...';
+                
+                const success = await saveData();
+                
+                saveBtn.disabled = false;
+                saveBtn.innerHTML = '💾 Save Now';
+                
+                if (success) {
+                    showNotification('Manual save completed successfully!', 'success');
+                }
+            };
+            
+            return saveBtn;
+        }
+
+        // Enhanced load data with better error handling
+        async function loadData() {
+            if (appState.isUserInteracting || document.getElementById('modal').style.display === 'block') {
                 return;
             }
             
-            const dataStr = JSON.stringify(jsonData, null, 2);
-            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-            
-            const linkElement = document.createElement('a');
-            linkElement.setAttribute('href', dataUri);
-            linkElement.setAttribute('download', 'data.json');
-            linkElement.click();
-            
-            showNotification('✅ data.json downloaded! Upload this to your GitHub repository.');
-        }
-
-        // Auto-download when data changes
-        function autoDownloadData() {
-            if (CONFIG.autoSave && jsonData.length > 0) {
-                downloadUpdatedData();
-            }
-        }
-
-        // Load sample data function
-        function loadSampleData() {
-            jsonData = [...sampleData];
-            filteredData = [...jsonData];
-            renderDashboard();
-            showNotification('Sample data loaded successfully!');
-            updateLastUpdateTime();
-        }
-
-        // Save filters to localStorage
-        function saveFiltersToStorage() {
-            localStorage.setItem('seaMasterFilters', JSON.stringify(activeFilters));
-            localStorage.setItem('seaMasterSearch', currentSearchTerm);
-        }
-
-        // Load filters from localStorage
-        function loadFiltersFromStorage() {
-            const savedFilters = localStorage.getItem('seaMasterFilters');
-            const savedSearch = localStorage.getItem('seaMasterSearch');
-            
-            if (savedFilters) {
-                activeFilters = JSON.parse(savedFilters);
-            }
-            
-            if (savedSearch) {
-                currentSearchTerm = savedSearch;
-                document.getElementById('searchInput').value = currentSearchTerm;
-            }
-            
-            return savedFilters || savedSearch;
-        }
-
-        // Apply saved filters to UI controls
-        function applySavedFiltersToUI() {
-            Object.entries(activeFilters).forEach(([key, value]) => {
-                const filterElement = document.getElementById(`filter-${key}`);
-                if (filterElement) {
-                    filterElement.value = value;
+            try {
+                console.log('📡 Loading data from server...');
+                const response = await fetchWithRetry(CONFIG.dataPath + '?t=' + Date.now());
+                const data = await response.json();
+                
+                // Check if data changed
+                const newDataStr = JSON.stringify(data);
+                const oldDataStr = JSON.stringify(appState.jsonData);
+                
+                if (newDataStr === oldDataStr) {
+                    console.log('📡 No data changes detected');
+                    return; // No changes
                 }
-            });
+                
+                console.log('📡 Data updated from server:', data.length, 'records');
+                appState.jsonData = Array.isArray(data) ? data : [data];
+                appState.lastDataUpdate = new Date();
+                
+                // Reapply filters and search
+                applySearchAndFilters();
+                
+                // Update UI
+                document.getElementById('lastUpdate').textContent = formatDate(appState.lastDataUpdate);
+                
+                // Initialize filters if first load
+                if (document.getElementById('filterControls').children.length === 0) {
+                    initializeFilters();
+                }
+                
+                updateStats();
+                console.log('✅ Data load completed successfully');
+                
+            } catch (error) {
+                console.error('❌ Error loading data:', error);
+                updateConnectionStatus('error');
+                if (!appState.jsonData.length) {
+                    showNotification('Failed to load data: ' + error.message, 'error');
+                }
+            }
         }
 
-        // Initialize filter panel
-        function initFilterPanel() {
-            if (jsonData.length === 0) return;
+        async function saveData() {
+            if (!appState.isOnline) {
+                showNotification('Cannot save - offline mode', 'error');
+                return false;
+            }
+
+            try {
+                console.log('💾 Saving data to server...', appState.jsonData.length, 'records');
+                
+                const response = await fetchWithRetry(CONFIG.savePath, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(appState.jsonData)
+                });
+                
+                const result = await response.json();
+                console.log('💾 Save response:', result);
+                
+                if (result.success) {
+                    console.log('✅ Data saved successfully to server');
+                    showNotification(`Data saved! ${result.records} records stored.`, 'success');
+                    return true;
+                } else {
+                    throw new Error(result.error || result.message || 'Save failed');
+                }
+            } catch (error) {
+                console.error('❌ Save error:', error);
+                showNotification('Save failed: ' + error.message, 'error');
+                return false;
+            }
+        }
+
+        async function reloadData() {
+            const reloadBtn = document.getElementById('reloadBtn');
+            reloadBtn.disabled = true;
+            reloadBtn.innerHTML = '<span class="loading-spinner"></span> Loading...';
+            
+            try {
+                await loadData();
+                showNotification('Data reloaded successfully', 'success');
+            } catch (error) {
+                showNotification('Reload failed: ' + error.message, 'error');
+            } finally {
+                reloadBtn.disabled = false;
+                reloadBtn.innerHTML = '🔄 Reload';
+            }
+        }
+
+        async function checkHealth() {
+            try {
+                const response = await fetchWithRetry(CONFIG.healthPath);
+                const health = await response.json();
+                
+                showNotification(`Server: ${health.status} | Records: ${health.records} | Uptime: ${Math.round(health.uptime)}s`, 'info');
+            } catch (error) {
+                showNotification('Health check failed: ' + error.message, 'error');
+            }
+        }
+
+        // ==========================================
+        // SEARCH & FILTER FUNCTIONS
+        // ==========================================
+
+        function initializeFilters() {
+            if (!appState.jsonData.length) return;
             
             const filterControls = document.getElementById('filterControls');
-            const sampleItem = jsonData[0];
+            const sampleItem = appState.jsonData[0];
             const keys = Object.keys(sampleItem);
             
-            // Clear existing controls
             filterControls.innerHTML = '';
             
             keys.forEach(key => {
-                // Skip ID fields
                 if (key.toLowerCase().includes('id')) return;
                 
                 const filterGroup = document.createElement('div');
                 filterGroup.className = 'filter-group';
                 
                 const label = document.createElement('label');
-                label.htmlFor = `filter-${key}`;
-                label.textContent = key;
+                label.textContent = key.replace(/_/g, ' ');
                 
-                const uniqueValues = [...new Set(jsonData.map(item => item[key]))]
-                    .filter(v => v !== undefined && v !== null)
+                const uniqueValues = [...new Set(appState.jsonData.map(item => item[key]))]
+                    .filter(v => v !== undefined && v !== null && v !== '')
                     .sort();
                 
                 let control;
                 
-                if (uniqueValues.length <= 10 && uniqueValues.length > 0) {
-                    // Create select dropdown for fields with few unique values
+                if (uniqueValues.length <= 15 && uniqueValues.length > 0) {
                     control = document.createElement('select');
                     control.id = `filter-${key}`;
-                    control.onchange = function() { updateFilter(key, this.value); };
                     
                     const defaultOption = document.createElement('option');
                     defaultOption.value = '';
@@ -1030,13 +1257,14 @@
                         option.textContent = value;
                         control.appendChild(option);
                     });
+                    
+                    control.addEventListener('change', () => updateFilter(key, control.value));
                 } else {
-                    // Create text input for other fields
                     control = document.createElement('input');
                     control.type = 'text';
                     control.id = `filter-${key}`;
-                    control.placeholder = `Filter ${key}`;
-                    control.oninput = function() { updateFilter(key, this.value); };
+                    control.placeholder = `Filter ${key}...`;
+                    control.addEventListener('input', debounce(() => updateFilter(key, control.value), 300));
                 }
                 
                 filterGroup.appendChild(label);
@@ -1044,47 +1272,30 @@
                 filterControls.appendChild(filterGroup);
             });
             
-            // Apply saved filters to UI if they exist
-            if (loadFiltersFromStorage()) {
-                applySavedFiltersToUI();
-                applySearchAndFilters();
-            }
-            
-            document.getElementById('filterPanel').style.display = 'block';
+            loadSavedFilters();
         }
 
-        // Toggle filter panel visibility
-        function toggleFilterPanel() {
-            const panel = document.getElementById('filterPanel');
-            if (panel.style.display === 'none') {
-                initFilterPanel();
-            } else {
-                panel.style.display = 'none';
-            }
-        }
-
-        // Update filter value with interaction tracking
         function updateFilter(key, value) {
-            isUserInteracting = true;
+            appState.isUserInteracting = true;
+            
             if (value === '') {
-                delete activeFilters[key];
+                delete appState.activeFilters[key];
             } else {
-                activeFilters[key] = value;
+                appState.activeFilters[key] = value;
             }
             
             setTimeout(() => {
-                isUserInteracting = false;
+                appState.isUserInteracting = false;
             }, 1000);
         }
 
-        // Apply both search and filters
         function applySearchAndFilters() {
-            let tempData = [...jsonData];
+            let tempData = [...appState.jsonData];
             
-            // Apply filters first
-            if (Object.keys(activeFilters).length > 0) {
+            // Apply filters
+            if (Object.keys(appState.activeFilters).length > 0) {
                 tempData = tempData.filter(item => {
-                    return Object.entries(activeFilters).every(([key, value]) => {
+                    return Object.entries(appState.activeFilters).every(([key, value]) => {
                         const itemValue = String(item[key] || '').toLowerCase();
                         const filterValue = String(value).toLowerCase();
                         return itemValue.includes(filterValue);
@@ -1092,173 +1303,187 @@
                 });
             }
             
-            // Then apply search
-            if (currentSearchTerm) {
+            // Apply search
+            if (appState.currentSearchTerm) {
                 tempData = tempData.filter(item => {
                     return Object.values(item).some(value => 
-                        String(value).toLowerCase().includes(currentSearchTerm)
+                        String(value).toLowerCase().includes(appState.currentSearchTerm)
                     );
                 });
             }
             
-            filteredData = tempData;
+            appState.filteredData = tempData;
             renderTable();
-            updateStatusChart();
+            updateChart();
+            updateStats();
         }
 
-        // Apply filters to data
         function applyFilters() {
             applySearchAndFilters();
-            saveFiltersToStorage();
-            showNotification(`Applied filters (${filteredData.length} items match)`);
+            saveFilters();
+            showNotification(`Filters applied - ${appState.filteredData.length} items match`, 'success');
         }
 
-        // Reset all filters
         function resetFilters() {
-            activeFilters = {};
-            currentSearchTerm = '';
-            localStorage.removeItem('seaMasterFilters');
-            localStorage.removeItem('seaMasterSearch');
-            
-            const inputs = document.querySelectorAll('.filter-panel input, .filter-panel select');
-            inputs.forEach(input => {
-                input.value = '';
-            });
+            appState.activeFilters = {};
+            appState.currentSearchTerm = '';
             
             document.getElementById('searchInput').value = '';
+            document.querySelectorAll('#filterControls input, #filterControls select').forEach(el => {
+                el.value = '';
+            });
             
-            filteredData = [...jsonData];
-            renderDashboard();
-            showNotification('Filters and search reset');
-        }
-
-        // File input handler
-        document.getElementById('fileInput').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    try {
-                        let parsedData;
-                        if (file.name.endsWith('.csv')) {
-                            parsedData = parseCSV(e.target.result);
-                        } else {
-                            parsedData = JSON.parse(e.target.result);
-                        }
-                        
-                        if (!Array.isArray(parsedData)) {
-                            parsedData = [parsedData];
-                        }
-                        
-                        jsonData = parsedData;
-                        
-                        // Clear search and filters for new data
-                        activeFilters = {};
-                        currentSearchTerm = '';
-                        document.getElementById('searchInput').value = '';
-                        
-                        filteredData = [...jsonData];
-                        
-                        // Reinitialize filters with new data
-                        initFilterPanel();
-                        
-                        renderDashboard();
-                        updateLastUpdateTime();
-                        showNotification('File loaded successfully!');
-                    } catch (error) {
-                        showNotification('Error parsing file!', 'error');
-                        console.error('Error:', error);
-                    }
-                };
-                
-                if (file.name.endsWith('.csv')) {
-                    reader.readAsText(file);
-                } else {
-                    reader.readAsText(file);
-                }
-            }
-        });
-
-        // Simple CSV parser
-        function parseCSV(csvText) {
-            const lines = csvText.split('\n');
-            const headers = lines[0].split(',').map(h => h.trim());
-            const result = [];
-            
-            for (let i = 1; i < lines.length; i++) {
-                if (!lines[i].trim()) continue;
-                
-                const values = lines[i].split(',');
-                const obj = {};
-                
-                for (let j = 0; j < headers.length; j++) {
-                    obj[headers[j]] = values[j] ? values[j].trim() : '';
-                }
-                
-                result.push(obj);
-            }
-            
-            return result;
-        }
-
-        // Search functionality with persistence
-        document.getElementById('searchInput').addEventListener('input', function(e) {
-            currentSearchTerm = e.target.value.toLowerCase();
-            isUserInteracting = true;
             applySearchAndFilters();
-            saveFiltersToStorage();
-            
-            // Stop interaction flag after a delay
-            setTimeout(() => {
-                isUserInteracting = false;
-            }, 1000);
-        });
-
-        // Prevent form submission on enter key in search
-        document.getElementById('searchInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-            }
-        });
-
-        function renderDashboard() {
-            renderTable();
-            updateStatusChart();
+            saveFilters();
+            showNotification('All filters reset', 'info');
         }
 
-        function updateStatusChart(statusCounts = null) {
-            const chartContainer = document.getElementById('chartContainer');
-            const statusChart = document.getElementById('statusChart');
-            
-            // If no statusCounts provided, calculate them
-            if (!statusCounts && jsonData.length > 0 && 'Status' in jsonData[0]) {
-                statusCounts = {};
-                jsonData.forEach(item => {
-                    const status = item.Status || 'Unknown';
-                    statusCounts[status] = (statusCounts[status] || 0) + 1;
-                });
+        function saveFilters() {
+            localStorage.setItem('seaMasterFilters', JSON.stringify(appState.activeFilters));
+            localStorage.setItem('seaMasterSearch', appState.currentSearchTerm);
+        }
+
+        function loadSavedFilters() {
+            try {
+                const savedFilters = localStorage.getItem('seaMasterFilters');
+                const savedSearch = localStorage.getItem('seaMasterSearch');
+                
+                if (savedFilters) {
+                    appState.activeFilters = JSON.parse(savedFilters);
+                    Object.entries(appState.activeFilters).forEach(([key, value]) => {
+                        const element = document.getElementById(`filter-${key}`);
+                        if (element) element.value = value;
+                    });
+                }
+                
+                if (savedSearch) {
+                    appState.currentSearchTerm = savedSearch;
+                    document.getElementById('searchInput').value = savedSearch;
+                }
+                
+                if (savedFilters || savedSearch) {
+                    applySearchAndFilters();
+                }
+            } catch (error) {
+                console.error('Error loading saved filters:', error);
             }
+        }
+
+        function toggleFilterPanel() {
+            const panel = document.getElementById('filterPanel');
+            const isVisible = panel.style.display !== 'none';
             
-            if (!statusCounts || Object.keys(statusCounts).length === 0) {
-                statusChart.style.display = 'none';
+            if (isVisible) {
+                panel.style.display = 'none';
+            } else {
+                if (!document.getElementById('filterControls').children.length) {
+                    initializeFilters();
+                }
+                panel.style.display = 'block';
+            }
+        }
+
+        // ==========================================
+        // RENDERING FUNCTIONS
+        // ==========================================
+
+        function renderTable() {
+            const container = document.getElementById('tableContainer');
+            
+            if (!appState.filteredData.length) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <h2>📭 No Data Found</h2>
+                        <p>No items match your current filters or search criteria</p>
+                        <button onclick="resetFilters()" class="btn-primary">Reset Filters</button>
+                    </div>
+                `;
+                return;
+            }
+
+            const keys = Object.keys(appState.filteredData[0]);
+            
+            let tableHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            ${keys.map(key => `<th>${key.replace(/_/g, ' ')}</th>`).join('')}
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            appState.filteredData.forEach((item, index) => {
+                const originalIndex = appState.jsonData.indexOf(item);
+                const hasEditableFields = CONFIG.editableByAll.some(field => field in item);
+                
+                tableHTML += `<tr onclick="viewItem(${originalIndex})">`;
+                
+                keys.forEach(key => {
+                    let value = item[key] || '';
+                    let displayValue = '';
+                    
+                    if (key === 'Status') {
+                        const statusClass = CONFIG.statusColors[value] || '';
+                        displayValue = `<span class="status-badge status-${statusClass}">${value}</span>`;
+                    } else {
+                        displayValue = String(value).length > 50 ? 
+                            `<span class="cell-content" title="${sanitizeHtml(String(value))}">${sanitizeHtml(String(value).substring(0, 50))}...</span>` :
+                            `<span class="cell-content">${makeLinksClickable(sanitizeHtml(String(value)))}</span>`;
+                    }
+                    
+                    tableHTML += `<td>${displayValue}</td>`;
+                });
+                
+                tableHTML += `
+                    <td onclick="event.stopPropagation()">
+                        <div class="action-buttons">
+                            <button onclick="viewItem(${originalIndex})" class="btn-info">👁️ View</button>
+                            ${(appState.isAdmin || hasEditableFields) ? 
+                              `<button onclick="editItem(${originalIndex})" class="btn-primary">✏️ Edit</button>` : ''}
+                            ${appState.isAdmin ? 
+                              `<button onclick="deleteItem(${originalIndex})" class="btn-danger">🗑️ Delete</button>` : ''}
+                        </div>
+                    </td>
+                </tr>`;
+            });
+
+            tableHTML += '</tbody></table>';
+            container.innerHTML = tableHTML;
+        }
+
+        function updateChart() {
+            if (!appState.filteredData.length) {
+                document.getElementById('chartPanel').style.display = 'none';
                 return;
             }
             
-            statusChart.style.display = 'block';
+            // Check if Status field exists
+            const hasStatus = appState.filteredData[0] && 'Status' in appState.filteredData[0];
+            if (!hasStatus) {
+                document.getElementById('chartPanel').style.display = 'none';
+                return;
+            }
             
-            // Find max value for scaling
+            const statusCounts = {};
+            appState.filteredData.forEach(item => {
+                const status = item.Status || 'Unknown';
+                statusCounts[status] = (statusCounts[status] || 0) + 1;
+            });
+            
+            const chartContainer = document.getElementById('chartContainer');
             const maxCount = Math.max(...Object.values(statusCounts));
             
-            // Generate chart bars
             let chartHTML = '';
             Object.entries(statusCounts).forEach(([status, count]) => {
-                const percentage = (count / maxCount) * 100;
-                const statusClass = status.toLowerCase().replace(/\s+/g, '');
+                const percentage = maxCount > 0 ? (count / maxCount) * 100 : 0;
+                const statusClass = CONFIG.statusColors[status] || 'pending';
                 
                 chartHTML += `
                     <div class="chart-bar">
-                        <div class="bar status-${statusClass}" 
-                             style="height: ${Math.max(percentage, 10)}%;"
+                        <div class="bar ${statusClass}" 
+                             style="height: ${Math.max(percentage, 5)}%;"
                              title="${status}: ${count} items">
                             <div class="bar-value">${count}</div>
                         </div>
@@ -1268,148 +1493,128 @@
             });
             
             chartContainer.innerHTML = chartHTML;
+            document.getElementById('chartPanel').style.display = 'block';
         }
 
-        // Function to detect and convert URLs to clickable links
-        function makeLinksClickable(text) {
-            if (!text) return '';
+        function updateStats() {
+            const statsPanel = document.getElementById('statsPanel');
+            const statsGrid = document.getElementById('statsGrid');
             
-            text = String(text);
-            const urlRegex = /(https?:\/\/[^\s<]+)|(www\.[^\s<]+)|(ftp:\/\/[^\s<]+)|([a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\/[^\s<]*)/g;
-            
-            return text.replace(urlRegex, function(match) {
-                let href = match;
-                if (!match.match(/^https?:\/\//)) {
-                    href = 'http://' + match;
-                }
-                return `<a href="${href}" target="_blank" class="clickable-link" onclick="event.stopPropagation()">${match}</a>`;
-            });
-        }
-
-        // Function to format status with badge
-        function formatStatus(status) {
-            if (!status) return '';
-            const statusClass = CONFIG.statusColors[status] || '';
-            return `<span class="status-badge ${statusClass}">${status}</span>`;
-        }
-
-        function renderTable() {
-            const container = document.getElementById('tableContainer');
-            
-            if (filteredData.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <h2>No data to display</h2>
-                        <p>Upload a JSON/CSV file or load sample data to get started</p>
-                        <button onclick="loadSampleData()" class="btn-primary" style="margin-top: 15px;">Load Sample Data</button>
-                    </div>
-                `;
+            if (!appState.jsonData.length) {
+                statsPanel.style.display = 'none';
                 return;
             }
-
-            const keys = Object.keys(filteredData[0]);
             
-            let tableHTML = `
-                <table>
-                    <thead>
-                        <tr>
-                            ${keys.map(key => `<th>${key}</th>`).join('')}
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+            const totalRecords = appState.jsonData.length;
+            const filteredRecords = appState.filteredData.length;
+            const lastUpdateDate = appState.lastDataUpdate ? formatDate(appState.lastDataUpdate) : 'Never';
+            
+            // Calculate additional stats
+            const statusStats = {};
+            if (appState.jsonData[0] && 'Status' in appState.jsonData[0]) {
+                appState.jsonData.forEach(item => {
+                    const status = item.Status || 'Unknown';
+                    statusStats[status] = (statusStats[status] || 0) + 1;
+                });
+            }
+            
+            let statsHTML = `
+                <div class="stat-card">
+                    <div class="stat-number">${totalRecords}</div>
+                    <div class="stat-label">Total Records</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${filteredRecords}</div>
+                    <div class="stat-label">Filtered Results</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${Object.keys(appState.activeFilters).length}</div>
+                    <div class="stat-label">Active Filters</div>
+                </div>
             `;
-
-            filteredData.forEach((item, index) => {
-                const originalIndex = jsonData.indexOf(item);
-                const hasEditableFields = CONFIG.editableByAll.some(field => field in item);
-                
-                tableHTML += `
-                    <tr onclick="viewItem(${originalIndex})" style="cursor: pointer;">
-                        ${keys.map(key => {
-                            const value = item[key] || '';
-                            let displayValue;
-                            
-                            if (key === 'Status') {
-                                displayValue = formatStatus(value);
-                            } else {
-                                displayValue = String(value).length > 50 ? 
-                                    String(value).substring(0, 50) + '...' : value;
-                                displayValue = makeLinksClickable(displayValue);
-                            }
-                            
-                            return `<td title="${String(value).replace(/"/g, '&quot;')}">${displayValue}</td>`;
-                        }).join('')}
-                        <td onclick="event.stopPropagation()">
-                            <div class="action-buttons">
-                                ${(isAdmin || hasEditableFields) ? 
-                                  `<button onclick="editItem(${originalIndex})" class="btn-primary">✏️ Edit</button>` : ''}
-                                ${isAdmin ? `<button onclick="deleteItem(${originalIndex})" class="btn-danger">🗑️ Delete</button>` : ''}
-                            </div>
-                        </td>
-                    </tr>
+            
+            // Add status-specific stats
+            Object.entries(statusStats).forEach(([status, count]) => {
+                statsHTML += `
+                    <div class="stat-card">
+                        <div class="stat-number">${count}</div>
+                        <div class="stat-label">${status}</div>
+                    </div>
                 `;
             });
-
-            tableHTML += `
-                    </tbody>
-                </table>
-            `;
-
-            container.innerHTML = tableHTML;
+            
+            statsGrid.innerHTML = statsHTML;
+            statsPanel.style.display = 'block';
         }
 
+        // ==========================================
+        // MODAL FUNCTIONS
+        // ==========================================
+
         function viewItem(index) {
-            editingIndex = index;
-            currentViewMode = 'view';
-            const item = jsonData[index];
+            appState.editingIndex = index;
+            appState.currentViewMode = 'view';
+            const item = appState.jsonData[index];
             showModal('View Item Details', item, 'view');
         }
 
         function editItem(index) {
-            editingIndex = index;
-            currentViewMode = 'edit';
-            const item = jsonData[index];
+            appState.editingIndex = index;
+            appState.currentViewMode = 'edit';
+            const item = appState.jsonData[index];
             showModal('Edit Item', item, 'edit');
         }
 
-        function deleteItem(index) {
-            if (!isAdmin) {
-                showNotification('Admin access required', 'error');
-                return;
-            }
-            
-            if (confirm('Are you sure you want to delete this item?')) {
-                jsonData.splice(index, 1);
-                applySearchAndFilters();
-                renderDashboard();
-                showNotification('Item deleted successfully!');
-                autoDownloadData(); // Auto-download updated data
-            }
-        }
-
         function addNewItem() {
-            if (!isAdmin) {
-                showNotification('Admin access required', 'error');
+            if (!appState.isAdmin) {
+                showNotification('Admin access required to add items', 'error');
                 return;
             }
             
-            editingIndex = -1;
-            currentViewMode = 'add';
+            appState.editingIndex = -1;
+            appState.currentViewMode = 'add';
             
-            if (jsonData.length > 0) {
-                const template = {};
-                Object.keys(jsonData[0]).forEach(key => {
+            const template = {};
+            if (appState.jsonData.length > 0) {
+                Object.keys(appState.jsonData[0]).forEach(key => {
                     template[key] = '';
                 });
-                showModal('Add New Item', template, 'add');
             } else {
-                const template = {
-                    id: '',
-                    name: '',
-                    value: ''
-                };
-                showModal('Add New Item', template, 'add');
+                template.id = '';
+                template.name = '';
+                template.status = '';
+            }
+            
+            showModal('Add New Item', template, 'add');
+        }
+
+        async function deleteItem(index) {
+            if (!appState.isAdmin) {
+                showNotification('Admin access required to delete items', 'error');
+                return;
+            }
+            
+            const item = appState.jsonData[index];
+            const itemName = item.Project_Name || item.name || item.id || 'this item';
+            
+            if (confirm(`Are you sure you want to delete "${itemName}"? This action cannot be undone.`)) {
+                // Remove from array
+                appState.jsonData.splice(index, 1);
+                console.log('🗑️ Deleted item at index', index);
+                
+                // Update UI immediately
+                applySearchAndFilters();
+                showNotification('Item deleted successfully', 'success');
+                
+                // Force save to server
+                console.log('🔄 Auto-saving after delete...');
+                const saveSuccess = await saveData();
+                
+                if (!saveSuccess) {
+                    showNotification('Warning: Item deleted locally but server save failed.', 'error');
+                } else {
+                    console.log('✅ Delete auto-save completed successfully');
+                }
             }
         }
 
@@ -1420,69 +1625,78 @@
             const modalFooter = document.getElementById('modalFooter');
             
             modalTitle.textContent = title;
-            isUserInteracting = true;
+            appState.isUserInteracting = true;
             
             if (mode === 'view') {
-                let viewHTML = '<div class="view-mode"><h3>Item Details</h3><div class="data-display">';
-                Object.keys(data).forEach(key => {
-                    let displayValue = data[key] || '<em>No value</em>';
+                let viewHTML = '<div class="view-mode"><h3>📋 Item Details</h3><div class="data-grid">';
+                
+                Object.entries(data).forEach(([key, value]) => {
+                    let displayValue = value || '<em>No value</em>';
                     
                     if (key === 'Status') {
-                        displayValue = formatStatus(displayValue);
+                        const statusClass = CONFIG.statusColors[value] || '';
+                        displayValue = `<span class="status-badge status-${statusClass}">${value}</span>`;
+                    } else if (typeof value === 'string' && value.length > 100) {
+                        displayValue = makeLinksClickable(sanitizeHtml(value));
                     } else {
-                        displayValue = makeLinksClickable(displayValue);
+                        displayValue = makeLinksClickable(sanitizeHtml(String(value)));
                     }
                     
                     viewHTML += `
                         <div class="data-item">
-                            <div class="data-label">${key}:</div>
+                            <div class="data-label">${key.replace(/_/g, ' ')}:</div>
                             <div class="data-value">${displayValue}</div>
                         </div>
                     `;
                 });
+                
                 viewHTML += '</div></div>';
                 modalBody.innerHTML = viewHTML;
                 
                 modalFooter.innerHTML = `
-                    ${(isAdmin || CONFIG.editableByAll.some(field => field in data)) ? 
-                      `<button onclick="editItem(${editingIndex})" class="btn-primary">✏️ Edit</button>` : ''}
+                    ${(appState.isAdmin || CONFIG.editableByAll.some(field => field in data)) ? 
+                      `<button onclick="editItem(${appState.editingIndex})" class="btn-primary">✏️ Edit Item</button>` : ''}
                     <button onclick="closeModal()" class="btn-danger">Close</button>
                 `;
             } else {
+                // Edit/Add mode
                 let formHTML = '<div class="form-grid">';
-                Object.keys(data).forEach(key => {
-                    // Skip auto-generated fields in edit mode
+                
+                Object.entries(data).forEach(([key, value]) => {
+                    // Skip auto-generated fields
                     if (['Edited_By', 'Last_Edit_Date', 'Created_By', 'Created_Date'].includes(key)) {
                         return;
                     }
                     
-                    const value = data[key] || '';
+                    const isEditable = appState.isAdmin || CONFIG.editableByAll.includes(key);
                     const isLongText = String(value).length > 100;
-                    const isEditable = isAdmin || CONFIG.editableByAll.includes(key);
                     
-                    if (isLongText) {
-                        formHTML += `
-                            <div class="form-group" style="grid-column: 1 / -1;">
-                                <label for="modal-${key}">${key}</label>
-                                <textarea id="modal-${key}" ${!isEditable ? 'readonly' : ''}>${value}</textarea>
-                            </div>
-                        `;
+                    formHTML += '<div class="form-group">';
+                    formHTML += `<label for="modal-${key}">${key.replace(/_/g, ' ')}</label>`;
+                    
+                    if (key === 'Status') {
+                        // Status dropdown
+                        const statusOptions = ['', 'Pending', 'In Progress', 'Completed', 'Rejected', 'Open', 'Hold'];
+                        formHTML += `<select id="modal-${key}" ${!isEditable ? 'disabled' : ''}>`;
+                        statusOptions.forEach(option => {
+                            const selected = option === value ? 'selected' : '';
+                            formHTML += `<option value="${option}" ${selected}>${option || '-- Select Status --'}</option>`;
+                        });
+                        formHTML += '</select>';
+                    } else if (isLongText) {
+                        formHTML += `<textarea id="modal-${key}" ${!isEditable ? 'readonly' : ''}>${sanitizeHtml(String(value))}</textarea>`;
                     } else {
-                        formHTML += `
-                            <div class="form-group">
-                                <label for="modal-${key}">${key}</label>
-                                <input type="text" id="modal-${key}" 
-                                       value="${String(value).replace(/"/g, '&quot;')}" 
-                                       ${!isEditable ? 'readonly' : ''} />
-                            </div>
-                        `;
+                        formHTML += `<input type="text" id="modal-${key}" value="${sanitizeHtml(String(value))}" ${!isEditable ? 'readonly' : ''} />`;
                     }
+                    
+                    formHTML += '</div>';
                 });
+                
                 formHTML += '</div>';
                 modalBody.innerHTML = formHTML;
                 
                 modalFooter.innerHTML = `
-                    <button onclick="saveModalData()" class="btn-success">💾 Save</button>
+                    <button onclick="saveModalData()" class="btn-success">💾 Save Changes</button>
                     <button onclick="closeModal()" class="btn-danger">Cancel</button>
                 `;
             }
@@ -1492,141 +1706,410 @@
 
         function closeModal() {
             document.getElementById('modal').style.display = 'none';
-            isUserInteracting = false;
+            appState.isUserInteracting = false;
         }
 
-        // Save modal data with user tracking and auto-download
-        function saveModalData() {
+        async function saveModalData() {
             const modal = document.getElementById('modal');
-            const inputs = modal.querySelectorAll('input, textarea');
+            const inputs = modal.querySelectorAll('input, textarea, select');
             const newData = {};
             let hasUnauthorizedEdit = false;
             
             // Get original item for comparison
-            const originalItem = editingIndex >= 0 ? jsonData[editingIndex] : {};
+            const originalItem = appState.editingIndex >= 0 ? appState.jsonData[appState.editingIndex] : {};
             
-            // Check for unauthorized edits if not admin
-            if (!isAdmin) {
+            // Check for unauthorized edits
+            if (!appState.isAdmin) {
                 inputs.forEach(input => {
                     const key = input.id.replace('modal-', '');
                     if (!CONFIG.editableByAll.includes(key) && 
-                        String(input.value) !== String(originalItem[key])) {
+                        String(input.value) !== String(originalItem[key] || '')) {
                         hasUnauthorizedEdit = true;
                     }
                 });
             }
             
             if (hasUnauthorizedEdit) {
-                showNotification('Only admins can edit these fields', 'error');
+                showNotification('You can only edit specific fields. Admin access required for other fields.', 'error');
                 return;
             }
             
-            // Proceed with save
+            // Collect form data
             inputs.forEach(input => {
                 const key = input.id.replace('modal-', '');
                 newData[key] = input.value;
             });
             
-            // ADD EDIT TRACKING
-            newData['Edited_By'] = currentUser;
-            newData['Last_Edit_Date'] = new Date().toLocaleString();
+            // Add tracking information
+            const now = new Date().toLocaleString();
+            newData['Edited_By'] = appState.currentUser;
+            newData['Last_Edit_Date'] = now;
             
-            // If it's a new item, also track creation
-            if (currentViewMode === 'add') {
-                newData['Created_By'] = currentUser;
-                newData['Created_Date'] = new Date().toLocaleString();
+            if (appState.currentViewMode === 'add') {
+                newData['Created_By'] = appState.currentUser;
+                newData['Created_Date'] = now;
             } else {
-                // Preserve original creation info if editing
-                if (originalItem['Created_By']) {
-                    newData['Created_By'] = originalItem['Created_By'];
-                }
-                if (originalItem['Created_Date']) {
-                    newData['Created_Date'] = originalItem['Created_Date'];
-                }
+                // Preserve original creation info
+                if (originalItem['Created_By']) newData['Created_By'] = originalItem['Created_By'];
+                if (originalItem['Created_Date']) newData['Created_Date'] = originalItem['Created_Date'];
             }
             
-            if (currentViewMode === 'edit') {
-                jsonData[editingIndex] = newData;
-                showNotification(`Item updated by ${currentUser}!`);
-            } else if (currentViewMode === 'add') {
-                jsonData.push(newData);
-                showNotification(`Item added by ${currentUser}!`);
+            // Update data in memory
+            if (appState.currentViewMode === 'edit') {
+                appState.jsonData[appState.editingIndex] = newData;
+                console.log('✏️ Updated item at index', appState.editingIndex, newData);
+                showNotification(`Item updated by ${appState.currentUser}`, 'success');
+            } else if (appState.currentViewMode === 'add') {
+                appState.jsonData.push(newData);
+                console.log('➕ Added new item', newData);
+                showNotification(`Item added by ${appState.currentUser}`, 'success');
             }
             
+            // Update UI immediately
             applySearchAndFilters();
-            renderDashboard();
             closeModal();
-            updateLastUpdateTime();
             
-            // Auto-download updated data for GitHub
-            autoDownloadData();
+            // Force save to server
+            console.log('🔄 Auto-saving after edit...');
+            const saveSuccess = await saveData();
+            
+            if (!saveSuccess) {
+                showNotification('Warning: Changes saved locally but server save failed. Data may be lost on refresh.', 'error');
+            } else {
+                console.log('✅ Auto-save completed successfully');
+            }
         }
 
-        function updateLastUpdateTime() {
-            const now = new Date();
-            document.getElementById('lastUpdate').textContent = `Last updated: ${now.toLocaleTimeString()}`;
+        // ==========================================
+        // FILE OPERATIONS
+        // ==========================================
+
+        async function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                try {
+                    let parsedData;
+                    
+                    if (file.name.endsWith('.csv')) {
+                        parsedData = parseCSV(e.target.result);
+                    } else {
+                        parsedData = JSON.parse(e.target.result);
+                    }
+                    
+                    if (!Array.isArray(parsedData)) {
+                        parsedData = [parsedData];
+                    }
+                    
+                    // Update data in memory
+                    appState.jsonData = parsedData;
+                    console.log('📁 File uploaded with', parsedData.length, 'records');
+                    
+                    // Reset filters and search
+                    appState.activeFilters = {};
+                    appState.currentSearchTerm = '';
+                    document.getElementById('searchInput').value = '';
+                    
+                    // Apply filters and update UI
+                    applySearchAndFilters();
+                    initializeFilters();
+                    
+                    showNotification(`File loaded successfully! ${parsedData.length} records imported.`, 'success');
+                    
+                    // Force save to server immediately
+                    console.log('🔄 Auto-saving uploaded data...');
+                    const saveSuccess = await saveData();
+                    
+                    if (!saveSuccess) {
+                        showNotification('Warning: File imported but server save failed. Data may be lost on refresh.', 'error');
+                    } else {
+                        console.log('✅ Upload auto-save completed successfully');
+                    }
+                } catch (error) {
+                    console.error('File parsing error:', error);
+                    showNotification('Error parsing file: ' + error.message, 'error');
+                }
+            };
+            
+            reader.readAsText(file);
         }
+
+        function parseCSV(csvText) {
+            const lines = csvText.trim().split('\n');
+            if (lines.length < 2) {
+                throw new Error('CSV file must have at least a header and one data row');
+            }
+            
+            const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
+            const result = [];
+            
+            for (let i = 1; i < lines.length; i++) {
+                if (!lines[i].trim()) continue;
+                
+                const values = lines[i].match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || [];
+                const obj = {};
+                
+                headers.forEach((header, index) => {
+                    let value = values[index] || '';
+                    value = value.replace(/^"|"$/g, '').trim(); // Remove quotes
+                    obj[header] = value;
+                });
+                
+                result.push(obj);
+            }
+            
+            return result;
+        }
+
+        function exportData() {
+            if (!appState.jsonData.length) {
+                showNotification('No data to export', 'error');
+                return;
+            }
+            
+            try {
+                const dataStr = JSON.stringify(appState.jsonData, null, 2);
+                const dataBlob = new Blob([dataStr], { type: 'application/json' });
+                
+                const timestamp = new Date().toISOString().replace(/[:.]/g, '-').substring(0, 19);
+                const filename = `sea_master_data_${timestamp}.json`;
+                
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(dataBlob);
+                link.download = filename;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                showNotification(`Data exported successfully as ${filename}`, 'success');
+            } catch (error) {
+                console.error('Export error:', error);
+                showNotification('Export failed: ' + error.message, 'error');
+            }
+        }
+
+        // ==========================================
+        // NOTIFICATION SYSTEM
+        // ==========================================
 
         function showNotification(message, type = 'success') {
             const notification = document.getElementById('notification');
             notification.textContent = message;
+            notification.className = `notification ${type}`;
             
-            if (type === 'error') {
-                notification.style.background = 'linear-gradient(135deg, #eb3349 0%, #f45c43 100%)';
-            } else if (type === 'info') {
-                notification.style.background = 'linear-gradient(135deg, #3498db 0%, #2980b9 100%)';
-            } else {
-                notification.style.background = 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)';
-            }
+            // Show notification
+            notification.classList.add('show');
             
-            notification.style.transform = 'translateX(0)';
+            // Hide after 4 seconds
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 4000);
+        }
+
+        // ==========================================
+        // SEARCH FUNCTIONALITY
+        // ==========================================
+
+        const debouncedSearch = debounce((searchTerm) => {
+            appState.currentSearchTerm = searchTerm.toLowerCase();
+            applySearchAndFilters();
+            saveFilters();
+        }, 300);
+
+        function handleSearch(event) {
+            appState.isUserInteracting = true;
+            debouncedSearch(event.target.value);
             
             setTimeout(() => {
-                notification.style.transform = 'translateX(400px)';
-            }, 3000);
+                appState.isUserInteracting = false;
+            }, 1000);
         }
 
-        // Initialize application
-        window.onload = function() {
-            // Check admin status first
-            checkAdminStatus();
-            
-            // Get user name
-            getUserIdentifier();
-            
-            // Show welcome message
-            showNotification(`Welcome ${currentUser}! Changes will auto-download for GitHub.`);
-            
-            // Load saved filters and search
-            loadFiltersFromStorage();
-            
-            // Load sample data by default
-            loadSampleData();
-        };
+        // ==========================================
+        // AUTO-RELOAD FUNCTIONALITY
+        // ==========================================
 
-        // Close modal when clicking outside
-        window.onclick = function(event) {
-            const modal = document.getElementById('modal');
-            if (event.target === modal) {
-                closeModal();
+        let reloadInterval;
+
+        function startAutoReload() {
+            if (CONFIG.autoReload && CONFIG.reloadInterval > 0) {
+                reloadInterval = setInterval(() => {
+                    if (appState.isOnline && !appState.isUserInteracting) {
+                        loadData();
+                    }
+                }, CONFIG.reloadInterval);
             }
         }
 
-        // Track when user leaves input fields
-        document.addEventListener('focusout', function(e) {
-            if (e.target.matches('input, textarea, select')) {
-                setTimeout(() => {
-                    isUserInteracting = false;
-                }, 500);
+        function stopAutoReload() {
+            if (reloadInterval) {
+                clearInterval(reloadInterval);
+                reloadInterval = null;
             }
+        }
+
+        // ==========================================
+        // EVENT LISTENERS
+        // ==========================================
+
+        function setupEventListeners() {
+            // File upload
+            document.getElementById('fileInput').addEventListener('change', handleFileUpload);
+            
+            // Search
+            document.getElementById('searchInput').addEventListener('input', handleSearch);
+            document.getElementById('searchInput').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') e.preventDefault();
+            });
+            
+            // Modal close on outside click
+            window.addEventListener('click', (event) => {
+                const modal = document.getElementById('modal');
+                if (event.target === modal) {
+                    closeModal();
+                }
+            });
+            
+            // Keyboard shortcuts
+            document.addEventListener('keydown', (event) => {
+                // Escape key closes modal
+                if (event.key === 'Escape' && document.getElementById('modal').style.display === 'block') {
+                    closeModal();
+                }
+                
+                // Ctrl+F focuses search
+                if (event.ctrlKey && event.key === 'f') {
+                    event.preventDefault();
+                    document.getElementById('searchInput').focus();
+                }
+                
+                // Ctrl+R reloads data
+                if (event.ctrlKey && event.key === 'r') {
+                    event.preventDefault();
+                    reloadData();
+                }
+            });
+            
+            // Page visibility changes
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) {
+                    stopAutoReload();
+                } else {
+                    startAutoReload();
+                    if (appState.isOnline) {
+                        loadData();
+                    }
+                }
+            });
+            
+            // Online/offline detection
+            window.addEventListener('online', () => {
+                updateConnectionStatus('online');
+                showNotification('Connection restored', 'success');
+                loadData();
+            });
+            
+            window.addEventListener('offline', () => {
+                updateConnectionStatus('offline');
+                showNotification('Working in offline mode', 'info');
+            });
+            
+            // Focus management for better UX
+            document.addEventListener('focusin', (e) => {
+                if (e.target.matches('input, textarea, select')) {
+                    appState.isUserInteracting = true;
+                }
+            });
+            
+            document.addEventListener('focusout', (e) => {
+                if (e.target.matches('input, textarea, select')) {
+                    setTimeout(() => {
+                        appState.isUserInteracting = false;
+                    }, 500);
+                }
+            });
+        }
+
+        // ==========================================
+        // INITIALIZATION
+        // ==========================================
+
+        async function initializeApp() {
+            try {
+                // Show loading state
+                updateConnectionStatus('loading');
+                
+                // Setup user and admin status
+                getUserIdentifier();
+                checkAdminStatus();
+                
+                // Setup event listeners
+                setupEventListeners();
+                
+                // Load initial data
+                await loadData();
+                
+                // Start auto-reload
+                startAutoReload();
+                
+                // Show welcome message
+                showNotification(`Welcome back, ${appState.currentUser}! 🎉`, 'success');
+                
+                // Update UI elements
+                document.getElementById('autoSaveStatus').textContent = CONFIG.autoSave ? '✅ Enabled' : '❌ Disabled';
+                document.getElementById('dataSource').textContent = CONFIG.dataPath;
+                
+            } catch (error) {
+                console.error('App initialization error:', error);
+                updateConnectionStatus('error');
+                showNotification('Failed to initialize app: ' + error.message, 'error');
+            }
+        }
+
+        // ==========================================
+        // GLOBAL ERROR HANDLING
+        // ==========================================
+
+        window.addEventListener('error', (event) => {
+            console.error('Global error:', event.error);
+            showNotification('An unexpected error occurred. Please refresh the page.', 'error');
         });
 
-        // Track when user enters input fields
-        document.addEventListener('focusin', function(e) {
-            if (e.target.matches('input, textarea, select')) {
-                isUserInteracting = true;
-            }
+        window.addEventListener('unhandledrejection', (event) => {
+            console.error('Unhandled promise rejection:', event.reason);
+            showNotification('A network error occurred. Please check your connection.', 'error');
         });
+
+        // ==========================================
+        // START APPLICATION
+        // ==========================================
+
+        // Initialize app when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeApp);
+        } else {
+            initializeApp();
+        }
+
+        // Make functions globally available for onclick handlers
+        window.adminLogin = adminLogin;
+        window.adminLogout = adminLogout;
+        window.toggleFilterPanel = toggleFilterPanel;
+        window.applyFilters = applyFilters;
+        window.resetFilters = resetFilters;
+        window.addNewItem = addNewItem;
+        window.viewItem = viewItem;
+        window.editItem = editItem;
+        window.deleteItem = deleteItem;
+        window.exportData = exportData;
+        window.reloadData = reloadData;
+        window.checkHealth = checkHealth;
+        window.closeModal = closeModal;
+        window.saveModalData = saveModalData;
+        window.manualSaveData = manualSaveData;
+
     </script>
 </body>
 </html>
