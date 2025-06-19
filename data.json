@@ -7,12 +7,10 @@
     "Layer": "3d map POI",
     "Description": "Review address points (quality level, category priority, and secondary status) in those containing POI ID in 3D POI map",
     "Multiple_Errror_links": "",
-    "Production_Team_Remark": "Issue Resolve",
+    "Production_Team_Remark": "Done",
     "Priority": "High",
     "Status": "Resolve",
-    "Comments": "Need to be Corrected",
-    "Edited_By": "Madhu",
-    "Last_Edit_Date": "18/6/2025, 4:09:00 pm"
+    "Comments": "Need to be Corrected"
   },
   {
     "Date": "06-05-2025",
@@ -100,7 +98,7 @@
     "Layer": "Building",
     "Description": "No Building footprint Location (1.289267,103.858653) Need to Check",
     "Multiple_Errror_links": "",
-    "Production_Team_Remark": "",
+    "Production_Team_Remark": "Issue has been resolved",
     "Priority": "Low",
     "Status": "Resolve",
     "Comments": "Review required"
@@ -206,7 +204,7 @@
     "Multiple_Errror_links": "",
     "Production_Team_Remark": "",
     "Priority": "High",
-    "Status": "Resolve",
+    "Status": "Open",
     "Comments": "Added"
   },
   {
@@ -752,7 +750,7 @@
     "Multiple_Errror_links": "",
     "Production_Team_Remark": "Wip",
     "Priority": "Low",
-    "Status": "Open",
+    "Status": "In progress",
     "Comments": "Review required"
   },
   {
@@ -817,7 +815,7 @@
     "Multiple_Errror_links": "",
     "Production_Team_Remark": "Edge Id Not found",
     "Priority": "High",
-    "Status": "Open",
+    "Status": "Hold",
     "Comments": "Review required"
   },
   {
@@ -1088,7 +1086,7 @@
     "Layer": "Road",
     "Description": "It's not a toll gate. EDGE_ID 68121122, FRC 5.",
     "Multiple_Errror_links": "",
-    "Production_Team_Remark": "There is no Toll In data.",
+    "Production_Team_Remark": "There is no Toll information  in the data.",
     "Priority": "High",
     "Status": "Hold",
     "Comments": "Added"
@@ -1101,7 +1099,7 @@
     "Layer": "Road",
     "Description": "Wrong name: Clementi sky garden > Clementi Road, 68218197",
     "Multiple_Errror_links": "",
-    "Production_Team_Remark": "This name not exist in data",
+    "Production_Team_Remark": "Wrong name not found in data",
     "Priority": "High",
     "Status": "Hold",
     "Comments": "Added"
@@ -1114,9 +1112,9 @@
     "Layer": "Road",
     "Description": "Plural junction check EDGE_ID (\"\"68348104, 68348102, 68348101, 68348205, 68348260, 68348305, 68348335, 68348324, 68348237,\n68348223, 68348240, 68382294, 68348229, 68348219, 68348192, 68348155, 68348157,\n68348166, 68348179, 68348194, 68382295, 68348228, 68348200, 68348174, 68129091, 68129100, 68129209, 68129374, 68129283, 68129525,68123346, 68123391, 68123470, 68123771, 68123825, 68123860, 68123917, 68123992,68120608, 68120655, 68120718, 68120729\"\")",
     "Multiple_Errror_links": "",
-    "Production_Team_Remark": "",
+    "Production_Team_Remark": "Issue has been resolved",
     "Priority": "High",
-    "Status": "Open",
+    "Status": "Resolve",
     "Comments": "Review required"
   },
   {
@@ -1127,9 +1125,9 @@
     "Layer": "Road",
     "Description": "construct end. Road open. Check real Lat Long 1.342928,103.876753",
     "Multiple_Errror_links": "",
-    "Production_Team_Remark": "",
+    "Production_Team_Remark": "Error Repeated & Issue has been resolved",
     "Priority": "High",
-    "Status": "Open",
+    "Status": "Resolve",
     "Comments": "Review required"
   },
   {
@@ -1140,9 +1138,9 @@
     "Layer": "Road",
     "Description": "construct end. Road open. Check real Lat Long 1.343664,103.877136",
     "Multiple_Errror_links": "",
-    "Production_Team_Remark": "",
+    "Production_Team_Remark": "Error Repeated & Issue has been resolved",
     "Priority": "High",
-    "Status": "Open",
+    "Status": "Resolve",
     "Comments": "Review required"
   },
   {
@@ -1153,9 +1151,9 @@
     "Layer": "Road",
     "Description": "construct end. Road open. Check real Lat Long 1.340125,103.877742",
     "Multiple_Errror_links": "",
-    "Production_Team_Remark": "",
+    "Production_Team_Remark": "Error Repeated & Issue has been resolved",
     "Priority": "High",
-    "Status": "Open",
+    "Status": "Resolve",
     "Comments": "Review required"
   },
   {
@@ -1166,9 +1164,9 @@
     "Layer": "Road",
     "Description": "construct end. Road open. Check real Lat Long 1.341425,103.880836",
     "Multiple_Errror_links": "",
-    "Production_Team_Remark": "",
+    "Production_Team_Remark": "Error Repeated & Issue has been resolved",
     "Priority": "High",
-    "Status": "Open",
+    "Status": "Resolve",
     "Comments": "Review required"
   },
   {
@@ -1179,9 +1177,9 @@
     "Layer": "Road",
     "Description": "Lane Guidance error (U-turn Lane) Lat Long 1.322514,103.905394",
     "Multiple_Errror_links": "",
-    "Production_Team_Remark": "",
+    "Production_Team_Remark": "Issue has been resolved",
     "Priority": "High",
-    "Status": "Open",
+    "Status": "Resolve",
     "Comments": "Review required"
   },
   {
@@ -1192,9 +1190,9 @@
     "Layer": "Road",
     "Description": "right side road(for u-turn) missing Lat Long 1.364742,103.828056",
     "Multiple_Errror_links": "",
-    "Production_Team_Remark": "",
+    "Production_Team_Remark": "Issue has been resolved",
     "Priority": "High",
-    "Status": "Open",
+    "Status": "Resolve",
     "Comments": "Review required"
   },
   {
@@ -1205,7 +1203,7 @@
     "Layer": "Turn",
     "Description": "If there is a turning (left) branch road available, then please restrict the turning (left) at the intersection.\nCurrently, it generates duplicate intersection guidance: Generate guidance before entering the intersection and generate guidance after entering the intersection.\nNeed to restrict this by adding logical turn restrictions (Turn Table or Complex Turn Table). Example: 1.3036523,103.8304901",
     "Multiple_Errror_links": "",
-    "Production_Team_Remark": "",
+    "Production_Team_Remark": "Aready Turn  Exist  . Please provide  more details",
     "Priority": "High",
     "Status": "Open",
     "Comments": "Added"
@@ -1218,9 +1216,9 @@
     "Layer": "Turn",
     "Description": "No U-turn is allowed but DB U-turn Restrict the U-Turn ,Lot_long 1.349000,103.738186",
     "Multiple_Errror_links": "",
-    "Production_Team_Remark": "",
+    "Production_Team_Remark": "Restriction added",
     "Priority": "High",
-    "Status": "Open",
+    "Status": "Resolve",
     "Comments": "Added"
   },
   {
@@ -1231,9 +1229,9 @@
     "Layer": "Turn",
     "Description": "No U-turn is allowed but DB U-turn Restrict the U-Turn, Lot_long 1.335514,103.784400",
     "Multiple_Errror_links": "",
-    "Production_Team_Remark": "",
+    "Production_Team_Remark": "Restriction added",
     "Priority": "High",
-    "Status": "Open",
+    "Status": "Resolve",
     "Comments": "Added"
   },
   {
@@ -1244,9 +1242,9 @@
     "Layer": "Turn",
     "Description": "No U-turn is allowed but DB U-turn Restrict the U-Turn, Lot_long 1.346106,103.737531",
     "Multiple_Errror_links": "",
-    "Production_Team_Remark": "",
+    "Production_Team_Remark": "Restriction added",
     "Priority": "High",
-    "Status": "Open",
+    "Status": "Resolve",
     "Comments": "Added"
   },
   {
@@ -1257,9 +1255,9 @@
     "Layer": "Turn",
     "Description": "No U-turn is allowed but DB U-turn Restrict the U-Turn, Lot_long 1.277483,103.858014",
     "Multiple_Errror_links": "",
-    "Production_Team_Remark": "",
+    "Production_Team_Remark": "Restriction added",
     "Priority": "High",
-    "Status": "Open",
+    "Status": "Resolve",
     "Comments": "Added"
   },
   {
@@ -1270,9 +1268,9 @@
     "Layer": "Turn",
     "Description": "No right-turn is allowed but DB right-turn Lat_long 1.404564,103.818806",
     "Multiple_Errror_links": "",
-    "Production_Team_Remark": "",
+    "Production_Team_Remark": "Restriction added",
     "Priority": "High",
-    "Status": "Open",
+    "Status": "Resolve",
     "Comments": "Added"
   },
   {
@@ -1283,9 +1281,9 @@
     "Layer": "Turn",
     "Description": "No U-turn is allowed but DB U-turn Lat_long 1.410406,103.774464",
     "Multiple_Errror_links": "",
-    "Production_Team_Remark": "",
+    "Production_Team_Remark": "Restriction added",
     "Priority": "High",
-    "Status": "Open",
+    "Status": "Resolve",
     "Comments": "Added"
   },
   {
@@ -1296,9 +1294,9 @@
     "Layer": "Turn",
     "Description": "No U-turn is allowed but DB U-turn Lat_long 1.436106,103.772006,  EDGE_ID = 68332346",
     "Multiple_Errror_links": "",
-    "Production_Team_Remark": "",
+    "Production_Team_Remark": "Restriction added",
     "Priority": "High",
-    "Status": "Open",
+    "Status": "Resolve",
     "Comments": "Added"
   },
   {
@@ -1309,9 +1307,9 @@
     "Layer": "Turn",
     "Description": "No U-turn is allowed but DB U-turn Lat_long 1.445333,103.807858, EDGE_ID = 68336233",
     "Multiple_Errror_links": "",
-    "Production_Team_Remark": "",
+    "Production_Team_Remark": "Restriction added",
     "Priority": "High",
-    "Status": "Open",
+    "Status": "Resolve",
     "Comments": "Added"
   },
   {
@@ -1322,9 +1320,9 @@
     "Layer": "Turn",
     "Description": "No U-turn is allowed but DB U-turn Lat_long 1.451586,103.829442, EDGE_ID= 68322710",
     "Multiple_Errror_links": "",
-    "Production_Team_Remark": "",
+    "Production_Team_Remark": "Restriction added",
     "Priority": "High",
-    "Status": "Open",
+    "Status": "Resolve",
     "Comments": "Added"
   },
   {
@@ -1348,9 +1346,9 @@
     "Layer": "Road",
     "Description": "Updated P_SPDLMT_M",
     "Multiple_Errror_links": "https://mega.nz/file/zIFWjISS#yDX6e87KQp9p4cviiMq8TyB66Tqr25s5Wgq4SOwBxGM",
-    "Production_Team_Remark": "",
+    "Production_Team_Remark": "P_SPDLMT_M  value is updated in the data. But Some records  have a unique id zero and the 42 value for P_SPDLMT_M  is not being updated in the data.",
     "Priority": "High",
-    "Status": "Open",
+    "Status": "Resolve",
     "Comments": "Added"
   },
   {
@@ -1361,9 +1359,9 @@
     "Layer": "Road",
     "Description": "Updated Connection/Connection_type",
     "Multiple_Errror_links": "https://mega.nz/file/qVNUTbQL#yz1Qds3b0tRLqndQIu7iwmpr_KBm8-S3iYAi4GEciiM",
-    "Production_Team_Remark": "",
+    "Production_Team_Remark": "Updated accordingto the feedback ",
     "Priority": "High",
-    "Status": "Open",
+    "Status": "Resolve",
     "Comments": "Added"
   },
   {
@@ -1374,9 +1372,9 @@
     "Layer": "POI",
     "Description": "Delete recode from master POI",
     "Multiple_Errror_links": "https://mega.nz/file/vQdUhLya#ndGZtjO1UpjJPtFZJ4hF-hXzma7YDAGZB-Z4DYjzrck",
-    "Production_Team_Remark": "",
+    "Production_Team_Remark": "2176  records matched  in data, 12 record  not matched",
     "Priority": "High",
-    "Status": "Open",
+    "Status": "Resolve",
     "Comments": "Added"
   },
   {
@@ -1400,6 +1398,19 @@
     "Layer": "lane/Road",
     "Description": "Please avoide  bus lane count in singapore road and lane data",
     "Multiple_Errror_links": "",
+    "Production_Team_Remark": "",
+    "Priority": "High",
+    "Status": "Open",
+    "Comments": "Review required"
+  },
+  {
+    "Date": "06-17-2025",
+    "Country": "SG",
+    "Issue_Id": "SG_0117",
+    "From": "TLT",
+    "Layer": "POI",
+    "Description": "POI on road please mentain MMI remarks in excel recode",
+    "Multiple_Errror_links": "https://mega.nz/file/IGsSSRpZ#LkK6kgm0da-j2W-C3VCRj4omgpE81hrlfhavRZ9UEjU",
     "Production_Team_Remark": "",
     "Priority": "High",
     "Status": "Open",
