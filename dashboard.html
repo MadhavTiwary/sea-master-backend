@@ -797,6 +797,7 @@
                 <input type="text" id="searchInput" placeholder="🔍 Search all data...">
                 <button onclick="toggleFilterPanel()" class="btn-primary">🔍 Filters</button>
                 <button onclick="addNewItem()" class="btn-success admin-only">➕ Add New</button>
+                <button onclick="manualSaveData()" class="btn-success">💾 Save Now</button>
                 <button onclick="exportData()" class="btn-info">💾 Export</button>
                 <button onclick="reloadData()" class="btn-primary" id="reloadBtn">🔄 Reload</button>
                 <button onclick="checkHealth()" class="btn-info">🏥 Health</button>
@@ -1083,12 +1084,36 @@
         // DATA MANAGEMENT
         // ==========================================
 
+        // Add manual save button functionality
+        async function manualSave() {
+            const saveBtn = document.createElement('button');
+            saveBtn.textContent = '💾 Save Now';
+            saveBtn.className = 'btn-success';
+            saveBtn.onclick = async () => {
+                saveBtn.disabled = true;
+                saveBtn.innerHTML = '<span class="loading-spinner"></span> Saving...';
+                
+                const success = await saveData();
+                
+                saveBtn.disabled = false;
+                saveBtn.innerHTML = '💾 Save Now';
+                
+                if (success) {
+                    showNotification('Manual save completed successfully!', 'success');
+                }
+            };
+            
+            return saveBtn;
+        }
+
+        // Enhanced load data with better error handling
         async function loadData() {
             if (appState.isUserInteracting || document.getElementById('modal').style.display === 'block') {
                 return;
             }
             
             try {
+                console.log('📡 Loading data from server...');
                 const response = await fetchWithRetry(CONFIG.dataPath + '?t=' + Date.now());
                 const data = await response.json();
                 
@@ -1097,9 +1122,11 @@
                 const oldDataStr = JSON.stringify(appState.jsonData);
                 
                 if (newDataStr === oldDataStr) {
+                    console.log('📡 No data changes detected');
                     return; // No changes
                 }
                 
+                console.log('📡 Data updated from server:', data.length, 'records');
                 appState.jsonData = Array.isArray(data) ? data : [data];
                 appState.lastDataUpdate = new Date();
                 
@@ -1115,9 +1142,10 @@
                 }
                 
                 updateStats();
+                console.log('✅ Data load completed successfully');
                 
             } catch (error) {
-                console.error('Error loading data:', error);
+                console.error('❌ Error loading data:', error);
                 updateConnectionStatus('error');
                 if (!appState.jsonData.length) {
                     showNotification('Failed to load data: ' + error.message, 'error');
@@ -1132,21 +1160,28 @@
             }
 
             try {
+                console.log('💾 Saving data to server...', appState.jsonData.length, 'records');
+                
                 const response = await fetchWithRetry(CONFIG.savePath, {
                     method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
                     body: JSON.stringify(appState.jsonData)
                 });
                 
                 const result = await response.json();
+                console.log('💾 Save response:', result);
                 
                 if (result.success) {
-                    showNotification('Data saved successfully', 'success');
+                    console.log('✅ Data saved successfully to server');
+                    showNotification(`Data saved! ${result.records} records stored.`, 'success');
                     return true;
                 } else {
-                    throw new Error(result.message || 'Save failed');
+                    throw new Error(result.error || result.message || 'Save failed');
                 }
             } catch (error) {
-                console.error('Save error:', error);
+                console.error('❌ Save error:', error);
                 showNotification('Save failed: ' + error.message, 'error');
                 return false;
             }
@@ -1553,19 +1588,32 @@
             showModal('Add New Item', template, 'add');
         }
 
-        function deleteItem(index) {
+        async function deleteItem(index) {
             if (!appState.isAdmin) {
                 showNotification('Admin access required to delete items', 'error');
                 return;
             }
             
-            if (confirm('Are you sure you want to delete this item? This action cannot be undone.')) {
+            const item = appState.jsonData[index];
+            const itemName = item.Project_Name || item.name || item.id || 'this item';
+            
+            if (confirm(`Are you sure you want to delete "${itemName}"? This action cannot be undone.`)) {
+                // Remove from array
                 appState.jsonData.splice(index, 1);
+                console.log('🗑️ Deleted item at index', index);
+                
+                // Update UI immediately
                 applySearchAndFilters();
                 showNotification('Item deleted successfully', 'success');
                 
-                if (CONFIG.autoSave) {
-                    saveData();
+                // Force save to server
+                console.log('🔄 Auto-saving after delete...');
+                const saveSuccess = await saveData();
+                
+                if (!saveSuccess) {
+                    showNotification('Warning: Item deleted locally but server save failed.', 'error');
+                } else {
+                    console.log('✅ Delete auto-save completed successfully');
                 }
             }
         }
@@ -1706,22 +1754,29 @@
                 if (originalItem['Created_Date']) newData['Created_Date'] = originalItem['Created_Date'];
             }
             
-            // Update data
+            // Update data in memory
             if (appState.currentViewMode === 'edit') {
                 appState.jsonData[appState.editingIndex] = newData;
+                console.log('✏️ Updated item at index', appState.editingIndex, newData);
                 showNotification(`Item updated by ${appState.currentUser}`, 'success');
             } else if (appState.currentViewMode === 'add') {
                 appState.jsonData.push(newData);
+                console.log('➕ Added new item', newData);
                 showNotification(`Item added by ${appState.currentUser}`, 'success');
             }
             
-            // Update UI
+            // Update UI immediately
             applySearchAndFilters();
             closeModal();
             
-            // Auto-save
-            if (CONFIG.autoSave) {
-                await saveData();
+            // Force save to server
+            console.log('🔄 Auto-saving after edit...');
+            const saveSuccess = await saveData();
+            
+            if (!saveSuccess) {
+                showNotification('Warning: Changes saved locally but server save failed. Data may be lost on refresh.', 'error');
+            } else {
+                console.log('✅ Auto-save completed successfully');
             }
         }
 
@@ -1729,12 +1784,12 @@
         // FILE OPERATIONS
         // ==========================================
 
-        function handleFileUpload(event) {
+        async function handleFileUpload(event) {
             const file = event.target.files[0];
             if (!file) return;
             
             const reader = new FileReader();
-            reader.onload = function(e) {
+            reader.onload = async function(e) {
                 try {
                     let parsedData;
                     
@@ -1748,7 +1803,9 @@
                         parsedData = [parsedData];
                     }
                     
+                    // Update data in memory
                     appState.jsonData = parsedData;
+                    console.log('📁 File uploaded with', parsedData.length, 'records');
                     
                     // Reset filters and search
                     appState.activeFilters = {};
@@ -1761,9 +1818,14 @@
                     
                     showNotification(`File loaded successfully! ${parsedData.length} records imported.`, 'success');
                     
-                    // Auto-save if enabled
-                    if (CONFIG.autoSave) {
-                        saveData();
+                    // Force save to server immediately
+                    console.log('🔄 Auto-saving uploaded data...');
+                    const saveSuccess = await saveData();
+                    
+                    if (!saveSuccess) {
+                        showNotification('Warning: File imported but server save failed. Data may be lost on refresh.', 'error');
+                    } else {
+                        console.log('✅ Upload auto-save completed successfully');
                     }
                 } catch (error) {
                     console.error('File parsing error:', error);
@@ -2046,6 +2108,7 @@
         window.checkHealth = checkHealth;
         window.closeModal = closeModal;
         window.saveModalData = saveModalData;
+        window.manualSaveData = manualSaveData;
 
     </script>
 </body>
